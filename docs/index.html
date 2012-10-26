@@ -85,26 +85,17 @@
 			</div>
 			
 			<div id="interface">
-				<h3>User Interface</h3>			
+				<h3>User Interface</h3>
 				
 				<!-- TODO -->
 				
 				<h4>Show/Hide More Options</h4>
 				<p>
-					We complete the user interface by implementing the toggle show/hide feature of the options overlay. We will need to add some JavaScript code for this. 
-					Go ahead and open up the <code>skeleton.js</code> file (about time!) in the <code>js</code> folder in your favorite text editor. Locate the <code>toggleOptions</code> function and observe it. 
-					The <code>options</code> variable stores the <code>DIV</code> element tagged by the id <code>options_overlay</code>. This is our overlay element. The <code>visibility</code> 
-					variable stores the current value of the <code>display</code> attribute of the overlay element. This attribute determines whether the element is hidden or not. Its possible values are 
-					the strings <code>"none"</code> (hidden), <code>"inline"</code> (visible) or <code>"block"</code> (visible). The overlay is obviously a block element since it will not be rendered in 
-					line with text, so we implement a toggle mechanism that sets the <code>display</code> attribute of <code>options</code> to <code>"none"</code> when it is <code>"block"</code> and 
-					currently <code>"block"</code> when it is currently <code>"none"</code>. This can be accomplished using a simple if-else conditional structure. Recall that we had earlier bound click listeners to 
-					the map container (<code>map_canvas</code>). From now on, the options button acts as a toggle switch to show or hide the options overlay. Additionally, clicking anywhere else on the interface except for the toolbar will hide the overlay. 
-					This effectively emulates a toggle show/hide mechanism.
+					We complete the user interface by implementing the toggle show/hide feature of the options overlay. We will need to add some JavaScript code for this. Go ahead and open up the <code>skeleton.js</code> file (about time!) in the <code>js</code> folder in your favorite text editor. Locate the <code>toggleOptions</code> function and observe it. The <code>options</code> variable stores the <code>DIV</code> element tagged by the id <code>options_overlay</code>. This is our overlay element. The <code>visibility</code> variable stores the current value of the <code>display</code> attribute of the overlay element. This attribute determines whether the element is hidden or not. Its possible values are the strings <code>"none"</code> (hidden), <code>"inline"</code> (visible) or <code>"block"</code> (visible). The overlay is obviously a block element since it will not be rendered in	line with text, so we implement a toggle mechanism that sets the <code>display</code> attribute of <code>options</code> to <code>"none"</code> when it is <code>"block"</code> and currently <code>"block"</code> when it is currently <code>"none"</code>. This can be accomplished using a simple if-else conditional structure. Recall that we had earlier bound click listeners to the map container (<code>map_canvas</code>). From now on, the options button acts as a toggle switch to show or hide the options overlay. Additionally, clicking anywhere else on the interface except for the toolbar will hide the overlay. This effectively emulates a toggle show/hide mechanism.
 				</p>
 				<h4>Show/Hide the about overlay</h4>
 				<p>
-					Do the same as above for the <code>about_overlay DIV</code> element to enable its toggle feature. You will need to work with the <code>aboutApp</code> function to accomplish this (note that the code for both 
-					<code>aboutApp</code> and <code>toggleOptions</code> should be very similar to each other).
+					Do the same as above for the <code>about_overlay DIV</code> element to enable its toggle feature. You will need to work with the <code>aboutApp</code> function to accomplish this (note that the code for both <code>aboutApp</code> and <code>toggleOptions</code> should be very similar to each other).
 				</p>
 			</div>
 			
@@ -115,8 +106,20 @@
 				</p>	
 				<h4>Initialize the Map<h4>	
 				<p>
-					We first need to deal with some start-up initializations. Take a look at the global variables right now.When the application loads, it first renders the marked up interface followed by the Google Maps object. 					
-					asd
+					We first need to deal with some start-up initializations. Take a look at the global variables right now. When the application loads, it first renders the marked up interface followed by the Google Maps object. asd
+				</p>
+				<h4>Refresh the Map</h4>
+				<p>
+					When the user continues using the app for a prolonged period of time without closing it, the map will eventually become cluttered with markers and polyline paths. This significantly bogs down performance and makes it hard to navigate through the map. To remedy this, we need a way to remove all overlays from the map, thereby "refreshing" it. Go to the <code>clear</code> function towards the end of the code. Our goal is to 1) clear any text in the search text entry field, 2) clear all rendered markers and 3) clear all rendered paths.
+					<br/>
+					<ol>
+						<li>
+							<h5>Clear the search box</h5>
+							<p>
+								Get the search field element from the markup and store it in a variable <code>search_box</code>. Assign the <code>value</code> attribute
+							</p>
+						</li>
+					</ol>
 				</p>
 			</div>
 			
