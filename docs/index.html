@@ -93,6 +93,7 @@
 				<p>
 					We complete the user interface by implementing the toggle show/hide feature of the options overlay. We will need to add some JavaScript code for this. Go ahead and open up the <code>skeleton.js</code> file (about time!) in the <code>js</code> folder in your favorite text editor. Locate the <code>toggleOptions</code> function and observe it. The <code>options</code> variable stores the <code>DIV</code> element tagged by the id <code>options_overlay</code>. This is our overlay element. The <code>visibility</code> variable stores the current value of the <code>display</code> attribute of the overlay element. This attribute determines whether the element is hidden or not. Its possible values are the strings <code>"none"</code> (hidden), <code>"inline"</code> (visible) or <code>"block"</code> (visible). The overlay is obviously a block element since it will not be rendered in	line with text, so we implement a toggle mechanism that sets the <code>display</code> attribute of <code>options</code> to <code>"none"</code> when it is <code>"block"</code> and currently <code>"block"</code> when it is currently <code>"none"</code>. This can be accomplished using a simple if-else conditional structure. Recall that we had earlier bound click listeners to the map container (<code>map_canvas</code>). From now on, the options button acts as a toggle switch to show or hide the options overlay. Additionally, clicking anywhere else on the interface except for the toolbar will hide the overlay. This effectively emulates a toggle show/hide mechanism.
 				</p>
+				
 				<h4>Show/Hide the about overlay</h4>
 				<p>
 					Do the same as above for the <code>about_overlay DIV</code> element to enable its toggle feature. You will need to work with the <code>aboutApp</code> function to accomplish this (note that the code for both <code>aboutApp</code> and <code>toggleOptions</code> should be very similar to each other).
@@ -103,20 +104,113 @@
 				<h3>Backend Functionality</h3>
 				<p>
 					Now let us work on the meat of the application. For the rest of this section, you will remain in <code>skeleton.js</code> unless specified otherwise.
-				</p>	
-				<h4>Initialize the Map<h4>	
+				</p>
+
+				<h4>Initialize the Map</h4>	
 				<p>
 					We first need to deal with some start-up initializations. Take a look at the global variables right now. When the application loads, it first renders the marked up interface followed by the Google Maps object. asd
+				</p>				
+				
+				<h4></h4>
+				<p>					
 				</p>
+				
+				<h4></h4>
+				<p>
+				</p>
+				
+				<h4></h4>
+				<p>
+				</p>
+				
+				<h4></h4>
+				<p>
+				</p>
+				
+				<h4></h4>
+				<p>
+				</p>
+				
+				<h4></h4>
+				<p>
+				</p>
+				
+				<h4></h4>
+				<p>
+				</p>
+				
+				<h4></h4>
+				<p>
+				</p>
+				
+				<h4></h4>
+				<p>
+				</p>
+				
+				<h4></h4>
+				<p>
+				</p>
+				
+				<h4></h4>
+				<p>
+				</p>
+				
+				<h4></h4>
+				<p>
+				</p>
+
+				<h4>Save Location For Later Use</h4>
+				<p>
+					One of the main features of the application is to store any desired location for reuse at a later time. This means that we need data that persists even after the app has been closed. The local web storage API defined as part of the HTML5 standard is a fine (and elegant) solution to this problem. Go to the <code>saveToLocalStorage(location)</code> function. It takes the <code>location</code> object, which is expected to be of type <code>google.maps.LatLng</code>, as an argument and stores it in the local web storage of the user's device.  First, create a JavaScript object<sup>*(JS object vs. JSON object)</sup> <code>data</code>. This object must have two properties, <code>lat</code> and <code>lng</code>, for storing the latitude and longitude of the <code>location</code> object separately. A <code>google.maps.LatLng</code> object has two methods, <code>lat()</code> and <code>lng()</code>. But these return <code>number</code> values, and not strings. Thus, we need to store in <code>data</code> the string representations of the values returned by the methods. Next, we need to convert <code>data</code> into a JSON object (string) because only strings can be stored in the local storage and we need a meaningful way to represent the <code>data</code> object. Store the resultant string in a variable <code>storage_string</code>. Now, consider the <code>localStorage</code> object that is provided as part of the API. It is a persistent object and its values do not change or reset even when the application is closed and re-opened. We obviously want to add our data somehow to this object so that it can be persistent as well. This can be done by creating a new property <code>savedLocation</code> and then storing the string representation of our data into this property. Your code should now look something like this:
+<pre>
+	// Store the latitude and longitude in a convenient object
+	var data = 
+	{
+		lat: (location.lat()).toString(),
+		lng: (location.lng()).toString()
+	};		
+	
+	// Convert to a JSON string so it can be saved in local web storage
+	var storage_string = JSON.stringify(data);	
+	localStorage.savedLocation = storage_string;
+</pre>
+					As a final touch, it would be nice if the map snapped to the location after saving it. This is a usability enhancement and just makes it easier for the user to be location-aware. To do this, simply center the map on the <code>location</code> object. Just to recall, the code for this would be:
+<pre>
+	map.setCenter(location);
+</pre>					
+					We are not done yet: there is one crucial thing missing from this entire code so far. It is quite unreasonable to expect that all devices and user agents support the HTML5 local web storage API. Thus, we need to handle this and notify the user accordingly. To check for the existence of this feature, you can simply check for <code>window.localStorage</code>. When used as a predicate for a conditional structure (like an <code>if</code>-statement), it evaluates to <code>true</code> if local storage is supported and <code>false</code> if not. Wrap the entire code we have written for this function so far in an <code>if</code> structure and produce an <code>alert</code> for the <code>else</code> part. Here is an illustration:
+<pre>
+	if (window.localStorage)
+	{
+		// Enter all code for this function, including the snapping of the map
+	}
+	else
+		alert("Error: localStorage is not supported by your device!");
+</pre>
+					Our application is now able to store persistent data.
+				</p>
+				
+				<h4>Load Last Saved Location</h4>
+				<p>
+					Once we have stored our data persistently, we must also be able to access it from local storage whenever its use is required. Take a look at the <code>loadFromLocalStorage()</code> function. Since we will be using the local web storage API once again, we obviously need to check to see if it is supported. You can see a conditional structure there exactly like the one from the <code>saveToLocalStorage(location)</code> function that we previously worked on. All we need to do is load the previously saved string representation of the location into a <code>google.maps.LatLng</code> object and then return this object to the caller. Recall that in the <code>saveToLocalStorage(location)</code> function, we used the <code>JSON.stringify(object)</code> method to convert <code>data</code> to a JSON string and stored it in <code>localStorage.savedLocation</code>. So we just need to get back the <code>data</code> object from <code>localStorage.savedLocation</code>, and we can do this by parsing the string using <code>JSON.parse(string)</code>. Store this in <code>data</code>, create a location object using <code>data.lat</code> and <code>data.lng</code> and then return this location. Your code should now look something like this:
+<pre>
+	var data = JSON.parse(localStorage.savedLocation);
+	var loaded_location = new google.maps.LatLng(data.lat, data.lng);
+	
+	return loaded_location;	
+</pre>					
+					Our function will now load and return the last saved location, as long as the local storage API is supported. But we are missing one crucial boundary case: what if there is no previously saved location in the first place? This would be the case when the application is run for the very first time, or if the local web storage was cleared. In order to handle this, we need to know what happens when a JavaScript object either does not exist or is not assigned any value.
+				</p>				
+				
 				<h4>Refresh the Map</h4>
 				<p>
-					When the user continues using the app for a prolonged period of time without closing it, the map will eventually become cluttered with markers and polyline paths. This significantly bogs down performance and makes it hard to navigate through the map. To remedy this, we need a way to remove all overlays from the map, thereby "refreshing" it. Go to the <code>clear</code> function towards the end of the code. Our goal is to 1) clear any text in the search text entry field, 2) clear all rendered markers and 3) clear all rendered paths.
+					When the user continues using the app for a prolonged period of time without closing it, the map will eventually become cluttered with markers and polyline paths. This significantly bogs down performance and makes it hard to navigate through the map. To remedy this, we need a way to remove all overlays from the map, thereby "refreshing" it. Go to the <code>clear()</code> function towards the end of the code. Our goal is to 1) clear any text in the search text entry field, 2) clear all rendered markers and 3) clear all rendered paths.
 					<br/>
 					<ol>
 						<li>
 							<h4>Clear the search box</h4>
 							<p>
-								Get the search field element from the markup and store it in a variable <code>search_box</code>. Assign the <code>value</code> attribute as <code>""</code>. This effectively clears the text entry field.
+								Get the search field element from the markup and store it in a variable <code>search_box</code>. Assign the <code>value</code> attribute<sup>*(attribute vs. property)</sup> as <code>""</code>. This effectively clears the text entry field.
 							</p>
 						</li>
 						<li>
@@ -134,9 +228,10 @@
 					</ol>
 					We have thus refreshed the entire map and have even cleared the search text entry field.					
 				</p>
-				<h4>Clear Local Storage</h4>
+				
+				<h4>Empty Local Storage</h4>
 				<p>
-					The user might want to clear their local web storage from time to time. This is similar to deleting cookies at the end of a browser session. This is very easy to accomplish. All we need to do is clear the contents of the <code>localStorage.savedLocation</code> variable. In JavaScript, you can do this by typing <code>delete localStorage.savedLocation;</code>. This will set <code>localStorage.savedLocation</code> to <code>undefined</code>. It is probably advisable to notify the user of this operation, so go ahead and send an <code>alert("Notice: All saved locations have been cleared!");</code> after the line. Now, realize that we once again can not expect all user's devices/browsers to support HTML5 local storage, so we must check for this and notify the user accordingly just as we did earlier.
+					The user might want to clear their local web storage from time to time. This is similar to deleting cookies at the end of a browser session. This is very easy to accomplish. Go to the <code>clearStorage</code> function. All we need to do is clear the contents of the <code>localStorage.savedLocation</code> variable. In JavaScript, you can do this by typing <code>delete localStorage.savedLocation;</code>. This will set <code>localStorage.savedLocation</code> to <code>undefined</code>. It is probably advisable to notify the user of this operation, so go ahead and send an <code>alert("Notice: All saved locations have been cleared!");</code> after the line. Now, realize that we once again can not expect all users' devices/browsers to support HTML5 local storage, so we must check for this and notify the user accordingly just as we did earlier.
 				</p>
 			</div>
 			

@@ -40,6 +40,9 @@ a:hover, a:active, select:active
 	color: #313131;
 	background-color: #EEEECE;	
 	text-shadow: none;
+	-moz-box-shadow: 0 1px 10px #000000;
+	-webkit-box-shadow: 0 1px 10px #000000;
+	box-shadow: 0 1px 10px #000000; 
 }
 
 #me

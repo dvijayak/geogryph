@@ -733,10 +733,10 @@ function watchUserLocation (callback, error)
 }
 
 
-// Saves the input location to local web storage (HTML 5)
+// [DONE] Saves the input location to local web storage (HTML 5)
 function saveToLocalStorage (location)
 {		
-	// Checks if local web storage is supported by the device
+	/* // Checks if local web storage is supported by the device
 	if (window.localStorage)
 	{
 		// Store the latitude and longitude in a convenient object
@@ -754,7 +754,7 @@ function saveToLocalStorage (location)
 		map.setCenter(location);
 	}
 	else
-		alert("Error: localStorage is not supported in your device!");
+		alert("Error: localStorage is not supported by your device!"); */
 }
 
 // Loads the last saved location from local web storage (HTML 5) and returns it to the caller
@@ -762,28 +762,28 @@ function loadFromLocalStorage ()
 {
 	if (window.localStorage)
 	{
-		// Check if a location was saved previously
+		/* // Check if a location was saved previously
 		if (localStorage.savedLocation === undefined || localStorage.savedLocation == null)
 		{			
 			alert("Error: You have not saved a location yet!");
 			return undefined;
-		}
+		} */
 
 		// Load the previously saved location into the application
-		var data = JSON.parse(localStorage.savedLocation);
+		var data; /*= JSON.parse(localStorage.savedLocation);
 		var loaded_location = new google.maps.LatLng(data.lat, data.lng);
 		
-		return loaded_location;
+		return loaded_location;*/
 	}
 	else
-		alert("Error: localStorage is not supported in your device!");
+		alert("Error: localStorage is not supported by your device!");
 }
 
 
 // [DONE] Clears all rendered overlays from the map
 function clear () 
 {
-	// Clear the search box
+	/* // Clear the search box
 	var search_box = document.getElementById("search");
 	search_box.value = "";
 	
@@ -796,20 +796,20 @@ function clear ()
 	
 	// Clears the position tracker service
 	if (navigator.geolocation)
-		navigator.geolocation.clearWatch(watcher_id);
+		navigator.geolocation.clearWatch(watcher_id); */
 }
 
 // [DONE] Clears the local web storage (HTML5) of the browser/agent/device
 function clearStorage ()
 {	
-	if (window.localStorage)
+/* 	if (window.localStorage)
 	{
 		delete localStorage.savedLocation;	
 			
 		alert("Notice: All saved locations have been cleared!");
 	}
 	else
-		alert("Error: localStorage is not supported in your device!");
+		alert("Error: localStorage is not supported in your device!"); */
 }
 
 // JUST A TESTING FUNCTION

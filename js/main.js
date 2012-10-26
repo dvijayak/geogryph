@@ -452,13 +452,16 @@ function save ()
 // Plot a path from the user's current location to the desired destination
 function plot (destination) 
 {	
+	if (destination === undefined) 			
+		destination = loadFromLocalStorage();
+
 	getUserLocation(
 		function (position)
 		{
 			 var origin = new google.maps.LatLng(position.coords.latitude, position.coords.longitude); // User's current location
 			// If a destination has not been provided, load from local web storage (HTML 5)
-			if (destination === undefined) 			
-				var destination = loadFromLocalStorage();
+			// if (destination === undefined) 			
+				// var destination = loadFromLocalStorage();
 							
 			if (destination !== undefined) // If a destination does exist (Note that loadFromLocalStorage() can return undefined			
 			{
@@ -754,7 +757,7 @@ function saveToLocalStorage (location)
 		map.setCenter(location);
 	}
 	else
-		alert("Error: localStorage is not supported in your device!");
+		alert("Error: localStorage is not supported by your device!");
 }
 
 // Loads the last saved location from local web storage (HTML 5) and returns it to the caller
@@ -762,8 +765,8 @@ function loadFromLocalStorage ()
 {
 	if (window.localStorage)
 	{
-		// Check if a location was saved previously
-		if (localStorage.savedLocation === undefined || localStorage.savedLocation == null)
+		// Check if a location was saved previously		
+		if (!localStorage.hasOwnProperty("savedLocation"))
 		{			
 			alert("Error: You have not saved a location yet!");
 			return undefined;
@@ -776,7 +779,7 @@ function loadFromLocalStorage ()
 		return loaded_location;
 	}
 	else
-		alert("Error: localStorage is not supported in your device!");
+		alert("Error: localStorage is not supported by your device!");
 }
 
 
