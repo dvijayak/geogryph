@@ -780,7 +780,7 @@ function loadFromLocalStorage ()
 }
 
 
-// Clears all rendered overlays from the map
+// [DONE] Clears all rendered overlays from the map
 function clear () 
 {
 	// Clear the search box

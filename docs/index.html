@@ -122,16 +122,17 @@
 						<li>
 							<h4>Clear all rendered markers</h4>
 							<p>
-								Recall that all created markers are stored in the <code>markers</code> global array variable. We need to iterate through this array and bind each marker to the map <code>null</code>. We also can't simply perform this operation on every single 
+								Recall that all created markers are stored in the <code>markers</code> global array variable. We need to iterate through this array and bind each marker to the <code>null</code> map. To do this operation, invoke <code>setMap(null)</code> for each marker object.
 							</p>
 						</li>
 						<li>
 							<h4>Clear all rendered paths</h4>
 							<p>
-								
+								Similar to above, we need to bind the DirectionsRenderer object to the <code>null</code> map. Invoke <code>setMap(null)</code> for the <code>directions_display</code> variable.
 							</p>
 						</li>
 					</ol>
+					We have thus refreshed the entire map and have even cleared the search text entry field.
 				</p>
 			</div>
 			
