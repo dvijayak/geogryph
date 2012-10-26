@@ -788,9 +788,8 @@ function clear ()
 	search_box.value = "";
 	
 	// Clear all rendered markers
-	for (var marker in markers)	
-		if (markers.hasOwnProperty(marker))				
-			markers[marker].setMap(null);						
+	for (var marker in markers)			
+		markers[marker].setMap(null);						
 	
 	// Clear all rendered paths
 	directions_display.setMap(null);	
