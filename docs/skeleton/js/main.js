@@ -799,7 +799,7 @@ function clear ()
 		navigator.geolocation.clearWatch(watcher_id);
 }
 
-// Clears the local web storage (HTML5) of the browser/agent/device
+// [DONE] Clears the local web storage (HTML5) of the browser/agent/device
 function clearStorage ()
 {	
 	if (window.localStorage)

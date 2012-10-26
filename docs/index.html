@@ -132,7 +132,11 @@
 							</p>
 						</li>
 					</ol>
-					We have thus refreshed the entire map and have even cleared the search text entry field.
+					We have thus refreshed the entire map and have even cleared the search text entry field.					
+				</p>
+				<h4>Clear Local Storage</h4>
+				<p>
+					The user might want to clear their local web storage from time to time. This is similar to deleting cookies at the end of a browser session. This is very easy to accomplish. All we need to do is clear the contents of the <code>localStorage.savedLocation</code> variable. In JavaScript, you can do this by typing <code>delete localStorage.savedLocation;</code>. This will set <code>localStorage.savedLocation</code> to <code>undefined</code>. It is probably advisable to notify the user of this operation, so go ahead and send an <code>alert("Notice: All saved locations have been cleared!");</code> after the line. Now, realize that we once again can not expect all user's devices/browsers to support HTML5 local storage, so we must check for this and notify the user accordingly just as we did earlier.
 				</p>
 			</div>
 			
