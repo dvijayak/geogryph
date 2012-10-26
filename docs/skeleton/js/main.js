@@ -239,22 +239,23 @@ function toggleOptions ()
 	var options = document.getElementById("options_overlay");
 	var visibility = options.style.display;	
 	
-	/* if (visibility == "none")
+	if (visibility == "none")
 		options.style.display = "block";
 	else
-		options.style.display = "none";	 */
+		options.style.display = "none";
+	
 }
 
 // Toggles the about overlay on/off
 function aboutApp ()
 {
-/* 	var about = document.getElementById("about_overlay");
+	var about = document.getElementById("about_overlay");
 	var visibility = about.style.display;	
 	
 	if (visibility == "none")
 		about.style.display = "block";
 	else
-		about.style.display = "none"; */	
+		about.style.display = "none";	
 }
 
 // Create and initialize the main Google Maps object
@@ -379,6 +380,19 @@ function initializeMap ()
 				search();
 		}
 	, false);
+	
+	// Create the autocomplete object and attach it to the search box
+	var search_bounds = new google.maps.LatLngBounds(
+			new google.maps.LatLng(43.518774,-80.24148),
+			new google.maps.LatLng(43.547739,-80.203886)
+		);
+	var search_box = document.getElementById("search");		
+	var auto_options = 
+		{
+			bounds: search_bounds,
+			componentRestrictions: {country: "ca"}
+		}
+	var autocomplete = new google.maps.places.Autocomplete(search_box, auto_options);		
 			
 }
 
@@ -508,7 +522,7 @@ function getUserLocation (callback, error)
 				}
 				error();
 			}
-		);
+		, {enableHighAccuracy: true, timeout: 27000});
 	} 
 	else
 	{
@@ -551,7 +565,7 @@ function watchUserLocation (callback, error)
 						break;
 				}
 			}
-		, {enableHighAccuracy: true, maximumAge: 30000, timeout: 27000});
+		, {enableHighAccuracy: true, timeout: 27000});
 	} 
 	else
 	{
@@ -583,6 +597,9 @@ function saveToLocalStorage (location)
 		// Convert to a JSON string so it can be saved in local session storage
 		var storage_string = JSON.stringify(data);	
 		localStorage.savedLocation = storage_string;		
+		
+		// Snap map to the saved location
+		map.setCenter(location);
 	}
 	else
 		alert("Error: localStorage is not supported in your device!");
@@ -636,7 +653,6 @@ function render (origin, destination)
 	);		 	
 }
 
-
 //////////////////////////////////////
 // EXECUTION STARTING POINTS /////////
 //////////////////////////////////////
@@ -660,7 +676,7 @@ function mark ()
 		{		
 			createMarker(value, selected_building.LatLng, selected_building.name, path_images + "university.png");	
 			checkMapZoom(map.getZoom());
-			map.setCenter(selected_building.LatLng);
+			// map.setCenter(selected_building.LatLng);
 		}
 
 		// Save the marked building location to local web storage (HTML 5)
@@ -731,7 +747,8 @@ function search ()
 		{
 			if (status == google.maps.places.PlacesServiceStatus.OK)
 			{
-				for (var i = 0; i < results.length; i++)
+				var i; // Declared outside in order to keep track of the last search result
+				for (i = 0; i < results.length; i++)
 				{					
 					var place = results[i];		
 					
@@ -753,7 +770,11 @@ function search ()
 					);
 					
 					createMarker(place.id, place.geometry.location, place.name, shrink_icon);
-				}	
+					// Save the last result into local storage
+					if (i == results.length - 1)
+						saveToLocalStorage(place.geometry.location);
+					
+				}				
 			}
 			else if (status == google.maps.places.PlacesServiceStatus.ZERO_RESULTS)			
 				alert("Search: No results were found for \"" + input + "\"");			
@@ -772,6 +793,10 @@ function search ()
 // Clears all rendered overlays from the map
 function clear () 
 {
+	// Clear the search box
+	var search_box = document.getElementById("search");
+	search_box
+	
 	// Clear all rendered markers
 	for (var marker in markers)	
 		if (markers.hasOwnProperty(marker))				
@@ -796,4 +821,13 @@ function clearStorage ()
 	}
 	else
 		alert("Error: localStorage is not supported in your device!");
+}
+
+// JUST A TESTING FUNCTION
+function checkLocalStorage ()
+{
+	console.log(localStorage.savedLocation);
+	alert(localStorage.savedLocation);	
+	for (marker in markers)	
+		console.log(marker.toString());
 }
