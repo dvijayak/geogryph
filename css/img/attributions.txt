@@ -1,0 +1,8 @@
+/*******************/
+/*** Attributions ***/
+/*******************/
+
+ALL except options.png & options_selected.png
+		Author: Peter Burdette
+		Website: http://aeriondesign.com   
+		License: CC (http://creativecommons.org/licenses/by-sa/3.0/)

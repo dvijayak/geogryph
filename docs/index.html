@@ -1,0 +1,140 @@
+<!DOCTYPE HTML>
+<html>
+
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+		<meta name="viewport" id="viewport" content="width=device-width, initial-scale=2, user-scalable=no" />
+		<title>GeoGryph: Tutorial</title>		
+		<link rel="icon" type="image/png" href="img/icon.png"/>
+		
+		<!-- Includes: stylesheets -->
+		<link type="text/css" href="css/style.css" rel="stylesheet"/> 		
+			<!-- Google Web Fonts Beta: Carrois Gothic (Latin) -->
+			<link type="text/css" href="http://fonts.googleapis.com/css?family=Carrois+Gothic" rel="stylesheet"/>		
+		
+		<!-- Includes: scripts -->		
+		
+		<!-- Styles -->
+		<style>
+			* { color: #313131; }
+			head { margin: 0; padding: 0; width: 100%; height: 100%; }
+			body { margin: 0; padding: 0; width: 100%; height: 100%; background-color: #313131;}
+												
+			#content
+			{							
+				margin: 0 auto;				
+				padding-left: 15px;
+				padding-right: 15px;								
+				width: 1000px;
+				height: 100%;
+				background-color: #EEEECE;
+				color: #313131;				
+			}			
+
+			h1, h2
+			{
+				font-family: Carrois Gothic;
+				font-weight: bold;				
+				text-shadow: 1px 1px #999999
+			}						
+			
+			p
+			{
+				text-align: justify;
+			}
+			
+		</style>		
+		
+	</head>
+
+	<body>		
+	
+		<div id="content">
+										
+			<div id="title" style="text-align: center">
+			
+				<h1>Developing Apps for BB10 with BlackBerry HTML5 WebWorks</h1>		
+				<h2>GeoGryph: An interactive campus map for University of Guelph students using Google Maps and HTML5 Geolocation</h2>
+				
+			</div>
+		
+			<div id="introduction">								
+				<h3>Introduction</h3>
+			</div>
+			
+			<div id="skill">
+				<h3>Required Knowledge & Skills</h3>
+			</div>
+			
+			<div id="tools">		
+				<h3>Required Tools & Configurations</h3>
+			</div>
+			
+			<div id="features">
+				<h3>Features</h3>
+				<p>
+					The following are the main features of this application:
+					<ul>
+						<li>Display the current location of the user on an interactive map</li>
+						<li>Trip recorder (see the Geolocation application from Lab #1)</li>
+						<li>Find a particular building at the university campus</li>
+						<li>Find any point of interest (POI) within the campus area</li>
+						<li>Display a path for walking from the user's current location to any other location identified by the above</li>
+					</ul>
+				</p>
+			</div>
+			
+			<div id="interface">
+				<h3>User Interface</h3>			
+				
+				<!-- TODO -->
+				
+				<h4>Show/Hide More Options</h4>
+				<p>
+					We complete the user interface by implementing the toggle show/hide feature of the options overlay. We will need to add some JavaScript code for this. 
+					Go ahead and open up the <code>skeleton.js</code> file (about time!) in the <code>js</code> folder in your favorite text editor. Locate the <code>toggleOptions</code> function and observe it. 
+					The <code>options</code> variable stores the <code>DIV</code> element tagged by the id <code>options_overlay</code>. This is our overlay element. The <code>visibility</code> 
+					variable stores the current value of the <code>display</code> attribute of the overlay element. This attribute determines whether the element is hidden or not. Its possible values are 
+					the strings <code>"none"</code> (hidden), <code>"inline"</code> (visible) or <code>"block"</code> (visible). The overlay is obviously a block element since it will not be rendered in 
+					line with text, so we implement a toggle mechanism that sets the <code>display</code> attribute of <code>options</code> to <code>"none"</code> when it is <code>"block"</code> and 
+					currently <code>"block"</code> when it is currently <code>"none"</code>. This can be accomplished using a simple if-else conditional structure. Recall that we had earlier bound click listeners to 
+					the map container (<code>map_canvas</code>). From now on, the options button acts as a toggle switch to show or hide the options overlay. Additionally, clicking anywhere else on the interface except for the toolbar will hide the overlay. 
+					This effectively emulates a toggle show/hide mechanism.
+				</p>
+				<h4>Show/Hide the about overlay</h4>
+				<p>
+					Do the same as above for the <code>about_overlay DIV</code> element to enable its toggle feature. You will need to work with the <code>aboutApp</code> function to accomplish this (note that the code for both 
+					<code>aboutApp</code> and <code>toggleOptions</code> should be very similar to each other).
+				</p>
+			</div>
+			
+			<div id="backend">
+				<h3>Backend Functionality</h3>
+				<p>
+					Now let us work on the meat of the application. For the rest of this section, you will remain in <code>skeleton.js</code> unless specified otherwise.
+				</p>	
+				<h4>Initialize the Map<h4>	
+				<p>
+					We first need to deal with some start-up initializations. Take a look at the global variables right now.When the application loads, it first renders the marked up interface followed by the Google Maps object. 					
+					asd
+				</p>
+			</div>
+			
+			<div id="testing">
+				<h3>Testing & Debugging</h3>
+			</div>
+			
+			<div id="conclusion">	
+				<h3>Conclusion</h3>
+			</div>
+			
+			<div id="appendix_a">
+				<h3>Appendix A: Solutions to mini-challenges</h3>
+			</div>
+	
+		</div>
+			
+	</body>
+	
+	
+</html>

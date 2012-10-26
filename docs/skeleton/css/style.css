@@ -1,0 +1,190 @@
+html { height: 100% }
+body { height: 100%; margin: 0; padding: 0; }
+
+#main_container 
+{ 
+	width: 100%;
+	height: 100%; 		
+}
+
+#main_container select, #main_container input
+{
+	padding-top: 18px;
+	padding-bottom: 18px;	
+}
+
+#toolbar
+{				
+	position: fixed;
+	z-index: 1000;
+	width: 100%;	
+	bottom: 0;			
+	margin: 0;	
+	padding: 0;	
+	background-color: #313131;	
+}
+
+/* #toolbar a */
+a
+{		
+	/* padding: 20px; */
+	width: 64px;
+	height: 64px;
+	font-family: 'Carrois Gothic';
+	color: #EEEECE;	
+	font-size: 1.2em;
+	text-decoration: none;		
+	text-shadow: 1px 1px #313131;	
+}
+
+/* #toolbar a:hover, #toolbar a:active, #toolbar select:active */
+a:hover, a:active, select:active
+{
+	color: #313131;
+	background-color: #EEEECE;	
+	text-shadow: none;
+}
+
+#me
+{
+	background-image: url('img/me.png');
+	background-position: center center;
+	background-repeat: no-repeat;
+}
+#me:hover, #me:active
+{
+	background-image: url('img/me_selected.png');
+}
+
+#plot
+{
+	background-image: url('img/plot.png');
+	background-position: center center;
+	background-repeat: no-repeat;
+}
+#plot:hover, #plot:active
+{
+	background-image: url('img/plot_selected.png');
+}
+
+#save
+{
+	background-image: url('img/save.png');
+	background-position: center center;
+	background-repeat: no-repeat;
+}
+
+#save:hover, #save:active
+{
+	background-image: url('img/save_selected.png');
+}
+
+#clear
+{
+	background-image: url('img/clear.png');
+	background-position: center center;
+	background-repeat: no-repeat;
+}
+#clear:hover, #clear:active
+{
+	background-image: url('img/clear_selected.png');
+}
+
+#go
+{
+	background-image: url('img/go.png');
+	background-position: center center;
+	background-repeat: no-repeat;
+}
+#go:hover, #go:active
+{
+	background-image: url('img/go_selected.png');
+}
+
+#check
+{
+	background-image: url('img/check.png');
+	background-position: center center;
+	background-repeat: no-repeat;
+}
+#check:hover, #check:active
+{
+	background-image: url('img/check_selected.png');
+}
+
+#options
+{
+	background-image: url('img/options.png');
+	background-position: center center;
+	background-repeat: no-repeat;
+}
+#options:hover, #options:active
+{
+	background-image: url('img/options_selected.png');
+}
+
+
+/*******************/
+/*******************/
+/*******************/
+
+#map_canvas 
+{ 	
+	padding: 0;
+	width: 100%;
+	height: 100%;	
+}
+
+#options_overlay
+{	
+	position: fixed;
+	/* width: 250px; */
+	/* height: 250px;	 */
+	bottom: 64px;
+	right: 0;
+	padding: 10px;
+	text-align: center;
+}
+
+#options_overlay input
+{
+	padding-top: 18px;
+	padding-bottom: 18px;
+}
+
+.centered
+{
+	width: 320px; /* 5 buttons x 64px (this was used for toolbars - adjust accordingly */
+	margin: 0 auto;
+}
+
+.geo_theme
+{
+	font-family: 'Carrois Gothic';
+	color: #EEEECE;	
+	font-size: 1.2em;
+	text-decoration: none;		
+	text-shadow: 1px 1px #313131;	
+	background-color: #313131;
+}
+
+.geo_options
+{
+	display: block;
+	font-family: 'Carrois Gothic';
+	color: #EEEECE;	
+	font-size: 1em;
+	text-decoration: none;		
+	text-shadow: 1px 1px #313131;	
+	background-color: #313131;
+}
+
+.left
+{
+	float: left;
+}
+
+.right
+{
+	float: right;
+}

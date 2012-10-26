@@ -1,0 +1,154 @@
+<!DOCTYPE HTML>
+<html>
+
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+		<meta name="viewport" id="viewport" content="width=device-width, user-scalable=no" />
+		<title>GeoGryph</title>
+		<link rel="icon" type="image/png" href="img/icon.png"/>
+		
+		<!-- Includes: stylesheets -->
+		<link type="text/css" href="css/style.css" rel="stylesheet"/> 		
+			<!-- Google Web Fonts Beta: Carrois Gothic (Latin) -->
+			<link type="text/css" href="http://fonts.googleapis.com/css?family=Carrois+Gothic" rel="stylesheet"/>		
+		
+		<!-- Includes: scripts -->
+		<!-- Note: Always include external libraries (like google) first before including personal libraries to avoid undefined reference errors -->		
+		<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyBdWg8QySMVfQ3GROvIhTqO-l4P4tHSi8U&libraries=places&sensor=true"></script>		
+		<script type="text/javascript" src="js/webworks-1.0.1.17.js"></script>
+		<script type="text/javascript" src="js/main.js"></script>		
+		
+		
+		<!-- onload scripts -->
+		<script>															
+							
+			function ready() 
+			{			
+				// MUST subscribe to the webworksready event before calling any WebWorks APIs
+				var ele = document.createElement("div");
+				ele.innerHTML = "uuid: " + blackberry.identity.uuid;
+				document.documentElement.appendChild(ele);			
+			}		
+			window.addEventListener("load", function(e) {
+				document.addEventListener("webworksready", ready);
+			}, false);						
+			
+		</script>		
+		
+	</head>
+
+	<body onload="initializeMap()">										
+	
+		<div id="main_container">							
+		
+			<div id="toolbar">
+
+				<div class="centered">				
+					<a class="left" id="plot" href="javascript:plot();"></a>									
+					<a class="left" id="save" href="javascript:save();"></a>	
+					<a class="left" id="me" href="javascript:snap();"></a>				
+					<a class="left" id="clear" href="javascript:clear();"></a>				
+					<a class="left" id="options" href="javascript:toggleOptions();"></a>					
+				</div>
+				
+			</div>
+			
+			<div id="map_canvas"></div>
+			
+		</div>
+		<div id="options_overlay" class="geo_options">
+		
+			<select class="geo_options" id="buildings" onchange="mark();">
+				<option value="null" selected="selected">&lt;Buildings&gt;</option>
+				<option value="AC">AC (Athletics Centre)</option>
+				<option value="ANNU">ANNU (Animal Science & Nutrition)</option>
+				<option value="ALEX">ALEX (Alexander Hall)</option>
+				<option value="AXEL">AXEL (Axelrod)</option>
+				<option value="BIO">BIO (Biodiversity Institute of Ontario)</option>
+				<option value="BWH">BWH (Blackwood Hall)</option>
+				<option value="CAF">CAF (Central Animal Facility)</option>
+				<option value="CRSC">CRSC (Crop Science)</option>
+				<option value="DH">DH (Day Hall)</option>
+				<option value="EBA">EBA (Environmental Biology Annex 1)</option>
+				<option value="ECB">ECB (Edmund C. Bovey)</option>
+				<option value="FS">FS (Food Science)</option>					
+				<option value="GRHM">GRHM (Graham Hall)</option>
+				<option value="HUTT">HUTT (H. L. Hutt)</option>
+				<option value="JHNH">JHNH (Johnston Hall)</option>
+				<option value="JTP">JTP (John T. Powell)</option>
+				<option value="LA">LA (Landscape Architecture)</option>					
+				<option value="MAC">MAC (Macdonald Hall)</option>
+				<option value="MACK">MACK (MacKinnon)</option>
+				<option value="MACN">MACN (MacNaughton)</option>
+				<option value="MACS">MACS (Macdonald Steward Hall)</option>
+				<option value="MASS">MASS (Massey Hall)</option>
+				<option value="MCLN">MCLN (MacLachlan)</option>
+				<option value="MINS">MINS (Macdonald Institute)</option>
+				<option value="MLIB">MLIB (McLaughlin Library)</option>
+				<option value="MSAC">MSAC (Macdonald Stewart Art Centre)</option>
+				<option value="OVC">OVC (Ontario Veterinary College)</option>
+				<option value="PAHL">PAHL (OVC Pathobiology AHL)</option>
+				<option value="REYN">REYN (Reynolds)</option>
+				<option value="RICH">RICH (Richards)</option>
+				<option value="ROZH">ROZH (Rozanski Hall)</option>
+				<option value="SCIE">SCIE (Science Complex)</option>
+				<option value="TCI">TCI (TransCanada Institute)</option>
+				<option value="THRN">THRN (Thornbrough)</option>
+				<option value="VSER">VSER (Vehicle Services)</option>
+				<option value="WMEM">WMEM (War Memorial Hall)</option>
+				<option value="ZAV">ZAV (Zavitz Hall)</option>
+				<option value="ZOOA">ZOOA (Zoology Annex 1)</option>
+				<option value="ZOOB">ZOOB (Zoology Annex 2)</option>
+			</select>					
+			<input class="geo_options" id="search" type="text" name="search"></input>
+			<a class="left" id="go" href="javascript:search();"></a>							
+			<a class="left" id="about" href="javascript:aboutApp();"></a>
+			<a class="left" id="empty" href="javascript:clearStorage();">Empty<br>Storage</a>
+			
+		</div>
+		
+		<div id="about_overlay" class="geo_about">
+			<p>
+				<b style="font-size: 2em;">GeoGryph</b>
+				<br>
+				<span style="font-size: 1.5em;">An Interactive Campus Map</span>
+				<br>					
+				<div>
+					<p>
+						GeoGryph aims to provide students and staff of the University of Guelph with an interactive campus map. Never face any more troubles finding and getting to places in the campus!
+						<br>
+						<br>
+						This app was developed by Daniel Vijayakumar under the supervision of Dr. Qusay H. Mahmoud, Director of CMER. For more information, visit the <a href="http://cmer.uoguelph.ca">CMER website</a>.
+						<br>
+						<br>
+						For the tutorial on how to create this app, as well as many other app-development tutorials, check out our <a href="http://cmer.uoguelph.ca/kit.html">academic kit</a>														
+					</p>
+				</div>
+				<span>Contact us at <a href="mailto:cmer@uoguelph.ca?Subject=Hello%20CMER!">cmer&#64;uoguelph.ca</a></span>
+				<br>
+				<br>
+				<a class="close" href="javascript:aboutApp();">CLOSE</a>
+			</p>	
+		</div>
+		
+		<script type="text/javascript">
+			// All overlays are hidden initially
+			var options = document.getElementById("options_overlay");
+			var about = document.getElementById("about_overlay");
+			options.style.display = "none";
+			about.style.display = "none";
+							
+			// Clicking anywhere will hide the overlays			
+			document.getElementById("map_canvas").addEventListener("click",
+				function ()
+				{
+					options.style.display = "none";
+					about.style.display = "none";
+				}
+			);
+		</script>
+			
+	</body>
+	
+	
+</html>

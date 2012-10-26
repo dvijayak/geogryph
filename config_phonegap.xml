@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<widget xmlns="http://www.w3.org/ns/widgets" 
+		xmlns:gap="http://phonegap.com/ns/1.0" 
+		version="1.0.0" 
+		id="geogryph">
+
+	<author href="http://cmer.uoguelph.ca/"	email="dvijayak@uoguelph.ca">
+		Daniel V.
+	</author>
+	
+	<name>GeoGrpyh</name>
+	<description>
+		An interactive campus map for University of Guelph students
+	</description>
+		
+	<feature name="http://api.phonegap.com/1.0/device"/>
+	
+	<!-- Preferences: Multi-Platform -->
+	<preference name="phonegap-version" value="2.0.0"/>
+	<preference name="orientation"		value="default"/>
+	<preference name="target-device"	value="universal"/>
+	<preference name="fullscreen"		value="true"/>
+	
+	<!-- (TODO) Preferences: iOS -->
+	
+	<!-- Preferences: Android -->
+	<preference name="android-minSdkVersion" value="10"/>
+	
+	<!-- Preferences: Blackberry -->
+	<preference name="disable-cursor" value="true"/>
+	
+	<!-- Icons and Splash Screens -->
+	<gap:splash src="img/cmer.png" gap:platform="android" gap:density="ldpi"/>
+	<gap:splash src="img/cmer.png" gap:platform="android" gap:density="mdpi"/>
+	<gap:splash src="img/cmer.png" gap:platform="android" gap:density="hdpi"/>
+	<gap:splash src="img/cmer.png" gap:platform="android" gap:density="xhdpi"/>
+	<gap:splash src="img/cmer.png" gap:platform="blackberry"/>
+	<!-- Complete sections for iOS and winphone -->
+	
+	<!-- Features (Android & Windows Phone permissions) -->
+	<feature name="http://api.phonegap.com/1.0/network"/>
+	<feature name="http://api.phonegap.com/1.0/geolocation"/>
+
+	<!-- External resources -->
+	<access origin="*"/>
+	
+</widget>
