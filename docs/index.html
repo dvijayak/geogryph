@@ -229,7 +229,19 @@
 				
 				<h4>Snap To User</h4>
 				<p>
-					The primal feature of the application is being able to snap/center the map on the user's current location. Consider the function <code>snap()</code>. It must work in tandem with <code>getUserLocation(callback)</code> in order to s
+					The primal feature of the application is being able to snap/center the map on the user's current location. Consider the very straightforward function <code>snap()</code>. It requests the user's current location by calling <code>getUserLocation(callback, errorCallback)</code> as defined above. The returned position must then be parsed and stored as a <code>google.maps.LatLng</code> object in a <code>location</code> variable. The user marker object is then associated with this location and the map is snapped to this point. The code you need to write for the anonymous callback function is something like the following:
+<pre>
+	function (position)
+	{
+		var location = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);		
+		updateMarkers([markers.user], [location], location);
+	}
+</pre>				
+					Note that the first two parameters of <code>updateMarkers(markers, positions, center?)</code> require arrays of markers and positions, respectively. Hence, we enclose the single entries within brackets. Also note that in this case, the optional argument for centering the map is passed, since we want to snap/center the map on the user's location.
+					<br/><br/>
+					Finally, examine the anonymous callback function that handles the error callback for <code>getUserLocation(callback, errorCallback)</code>. If geolocation services fail for some reason, the map is centered on a predefined location. In this case (as well as the rest of the application), the location is the intersection of Stone Road and Gordon Street.
+					<br/><br/>
+					Our application can now snap to the user's location as desired. We will follow the template and general structure of this function for some other functions as well.
 				</p>
 				
 				<h4>Save User's Current Location</h4>

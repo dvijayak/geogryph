@@ -424,14 +424,14 @@ function mark ()
 	
 }
 
-// Snap the focus on to the user's current location
+// [DONE] Snap the focus on to the user's current location
 function snap () 
 {		
 	getUserLocation(
 		function (position)
 		{
-			var location = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);											
-			updateMarkers([markers.user], [location], location)			
+			/* var location = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);											
+			updateMarkers([markers.user], [location], location)		 */	
 		},	
 		function ()
 		{
