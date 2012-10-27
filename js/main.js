@@ -415,8 +415,7 @@ function mark ()
 		else 
 		{		
 			createMarker(value, selected_building.LatLng, selected_building.name, path_images + "university.png");	
-			checkMapZoom(map.getZoom());
-			// map.setCenter(selected_building.LatLng);
+			checkMapZoom(map.getZoom());			
 		}
 
 		// Save the marked building location to local web storage (HTML 5)
@@ -589,9 +588,8 @@ function createMarker (id, position, title, icon)
 		{
 			map: map,
 			position: position,
-			title: title
-			// animation: google.maps.Animation.DROP
-		}
+			title: title			
+		};
 		if (icon !== undefined)
 			marker_options.icon = icon;
 			

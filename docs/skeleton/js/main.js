@@ -415,8 +415,7 @@ function mark ()
 		else 
 		{		
 			createMarker(value, selected_building.LatLng, selected_building.name, path_images + "university.png");	
-			checkMapZoom(map.getZoom());
-			// map.setCenter(selected_building.LatLng);
+			checkMapZoom(map.getZoom());			
 		}
 
 		// Save the marked building location to local web storage (HTML 5)
@@ -540,14 +539,14 @@ function search ()
 }
 
 
-// Restricts the possible zoom levels of the map
+// [DONE] Restricts the possible zoom levels of the map
 function checkMapZoom (current_zoom)
 {	
-	if (current_zoom < desired_zoom)
+	/* if (current_zoom < desired_zoom)
 	{		
 		if (current_zoom < min_zoom)	
 			map.setZoom(min_zoom);				
-	}
+	} */
 }
 
 // Takes an origin and a destination location, plots the directions between the two and then renders the path on the map
@@ -575,23 +574,22 @@ function render (origin, destination)
 	);		 	
 }
 
-// Create a marker object representing a location and add it to the global array of markers
+// [DONE] Create a marker object representing a location and add it to the global array of markers
 // Optional: add a custom icon to the marker object
 function createMarker (id, position, title, icon)
 {
-	if (!markers.hasOwnProperty(id))
-	{
-		var marker_options = 
+	/* if (!markers.hasOwnProperty(id))
+	{ */
+		var marker_options; /*= 
 		{
 			map: map,
 			position: position,
-			title: title
-			// animation: google.maps.Animation.DROP
-		}
+			title: title			
+		};
 		if (icon !== undefined)
-			marker_options.icon = icon;
+			marker_options.icon = icon; */
 			
-		markers[id] = new google.maps.Marker(marker_options);	
+		/* markers[id] = new google.maps.Marker(marker_options);	 */
 
 		var content = "<DIV style='text-align:center; padding:0 2px 0 2px; background-color:#313131; color:#EEEECE;'>" + 
 			"<H3><B>" + title + "</B></H3></DIV>";
@@ -604,9 +602,9 @@ function createMarker (id, position, title, icon)
 		google.maps.event.addListener(markers[id], 'click',				
 			function ()
 			{						
-				saveToLocalStorage(position);
+				/*saveToLocalStorage(position);
 				checkMapZoom(map.getZoom())
-				map.setCenter(position);
+				map.setCenter(position);*/
 				
 				info_window.open(map, markers[id]);
 			}			
@@ -618,9 +616,9 @@ function createMarker (id, position, title, icon)
 				info_window.close();
 			}
 		);
-	}
+	/* }
 	else
-		markers[id].setMap(map);
+		markers[id].setMap(map); */
 }
 
 // Update the position of the inputted markers on the map
@@ -666,8 +664,8 @@ function getUserLocation (callback, errorCallback)
 		navigator.geolocation.getCurrentPosition(			
  			function (position)
 			{					
-				// Do something with the current position
-				callback(position);
+				/* // Do something with the current position
+				callback(position); */
 			}
 			// Deal with errors
 			, function (error)
@@ -677,7 +675,7 @@ function getUserLocation (callback, errorCallback)
 					case error.PERMISSION_DENIED:
 						alert("Error: Denied access to location services!");
 						break;
-					case error.POSITION_UNAVAILABLE:
+					/* case error.POSITION_UNAVAILABLE:
 						alert("Error: Location information is unavailable!");
 						break;
 					case error.TIMEOUT:
@@ -685,68 +683,22 @@ function getUserLocation (callback, errorCallback)
 						break;
 					case error.UNKNOWN_ERROR:
 						alert("Error: An unknown error has occurred!");
-						break;
+						break; */
 				}
-				if (errorCallback !== undefined)
-					errorCallback();
+				/* if (errorCallback !== undefined)
+					errorCallback(); */
 			}
 		, {enableHighAccuracy: true});
 	} 
-	else
+/* 	else
 	{
 		if (errorCallback === undefined)
 			alert("Error: Geolocation services are not supported by your device!");
 		else
 			errorCallback();
-	}
+	} */
 		
 }
-
-// [EXTRA] Track the current location of the user's device
-function watchUserLocation (callback, errorCallback)
-{
- 	// Geolocation services must be enabled
-	if (navigator.geolocation)
-	{
-		navigator.geolocation.clearWatch(watcher_id);
-		watcher_id = navigator.geolocation.watchPosition(			
- 			function (position)
-			{					
-				// Do something with the current position
-				callback(position);
-			}
-			// Deal with errors
-			, function (error)
-			{
-				switch(error.code)
-				{
-					case error.PERMISSION_DENIED:
-						alert("Error: Denied access to location services!");
-						break;
-					case error.POSITION_UNAVAILABLE:
-						alert("Error: Location information is unavailable!");
-						break;
-					case error.TIMEOUT:
-						alert("Error: Request timed out!");
-						break;
-					case error.UNKNOWN_ERROR:
-						alert("Error: An unknown error has occurred!");
-						break;
-				}
-				if (errorCallback !== undefined)
-					errorCallback();
-			}
-		, {enableHighAccuracy: true});
-	} 
-	else
-	{
-		if (errorCallback === undefined)
-			alert("Error: Geolocation services are not supported by your device!");
-		else
-			errorCallback();
-	}
-}
-
 
 // [DONE] Saves the input location to local web storage (HTML 5)
 function saveToLocalStorage (location)

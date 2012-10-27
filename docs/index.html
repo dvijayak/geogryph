@@ -28,14 +28,16 @@
 				width: 1000px;
 				height: 100%;
 				background-color: #EEEECE;
-				color: #313131;				
+				color: #313131;	
+				-moz-box-shadow: 0 1px 10px #000000;
+				-webkit-box-shadow: 0 1px 10px #000000;
+				box-shadow: 0 1px 10px #000000; 
 			}			
 
 			h1, h2
 			{
 				font-family: Carrois Gothic;
-				font-weight: bold;				
-				text-shadow: 1px 1px #999999
+				font-weight: bold;								
 			}						
 			
 			p
@@ -134,14 +136,69 @@
 				
 				<h4>Restrict Map Zoom Level</h4>
 				<p>
+					It is normally expected that the user of a maps-based application will use the zoom feature of the map to their advantage. The problem with this lies in the way web-based applications render the map object. Each state of the map has a number of images associated with it. Whenever a new state is reached, these images must be downloaded to the applications. States are changed by zooming, panning and some other operations. If the user zooms quite often, the performance of the app is expected to reduce significantly, especially on mobile devices. Additionally, unnecessary usage expenses are incurred for those who use 2G/3G/LTE networks. In order to gain more performance as well as more usability, this application restricts how much the user can zoom in/out the map by a fixed amount. 
+					<br/><br/>
+					Implementing this is very trivial. Go to the <code>checkMapZoom(current_zoom)</code> function. At any given state, the map is at a specific level of zoom which ranges between 1-19. The argument <code>current_zoom</code> contains this value, which must be passed by the caller. Note the two global variables <code>min_zoom</code> and <code>desired_zoom</code>. These parameters describe the restriction level (note that <code>min_zoom</code> must always be less than or equal to <code>desired_zoom</code>). Whenever the current zoom level is <b>greater than or equal to</b> the desired zoom level, we need not change the zoom level of the map. This ensures that no change of state by zooming occurs when the user has zoomed in quite a bit. But whenever it is <b>less than</b> the desired zoom level, we then need to check if it is <b>also less than</b> the minimum zoom level. If <b>yes</b>, then the map's zoom level is reset to the minimum zoom level. This is done to prevent the user from zooming too far out, thus preventing cases of the need to rectify excess zooming. <b>Else</b>, nothing needs to be done again. Here is what the code should look like:
+<pre>
+	// Restricts the possible zoom levels of the map
+	function checkMapZoom (current_zoom)
+	{	
+		if (current_zoom &#60; desired_zoom)
+		{		
+			if (current_zoom &#60; min_zoom)	
+				map.setZoom(min_zoom);				
+		}
+	}
+</pre>				
+					Note that <code>desired_zoom</code> might be more appropriately named as <code>default_zoom</code>. Both names are semantically acceptable; it is up to your discretion which one to use. Also note that the desired zoom level and minimum zoom level parameters can be changed as desired. Additionally, a maximum zoom level parameter can also be defined and used in this function to restrict how close the user can zoom in. This is optional and is thus left to the reader to implement it if desired.
+					<br/><br/>
+					Thus, we are now able to restrict the zoom level as desired. 
 				</p>				
 				
 				<h4>Render Path</h4>
-				<p>
+				<p>					
 				</p>								
 				
 				<h4>Create Marker</h4>
 				<p>
+					Due to the nature of the application, we will have an indefinite and sometimes large number of markers on the map. In order to efficiently work with them, we store all markers in a global JavaScript object <code>markers</code>. Thus, we abstract the marker creation process into a separate function that appends newly created markers to this object. We will take advantage of the fact that JavaScript objects can function like associative arrays, so each marker is added as a property of the <code>markers</code> object.
+					<br/><br/>
+					Go to the <code>createMarker(id, position, title, icon)</code> function. The first and most important step is to create the marker object. Assign to <code>marker_options</code> the following properties: the <code>map</code> it belongs to; its <code>position</code> (a <code>google.maps.LatLng</code> object); and a <code>title</code> that briefly describes the marker. The <code>map</code> global variable is obviously the map; the <code>position</code> and <code>title</code> arguments of the function satisfy the next two properties. Now the icon uri that contains the image of the marker is an optional argument to the function, so we need to handle this. This can be done as follows:
+<pre>
+	if (icon !== undefined)
+		marker_options.icon = icon;
+</pre>
+					We need a unique identifier in order to represent each <code>markers</code> property as a marker object. This is satisfied via the <code>id</code> argument. We now have everything we need to create the marker object, so type the following code:
+<pre>
+	markers[id] = new google.maps.Marker(marker_options);
+</pre>
+					Next, we need to create an information window overlay so that when the user clicks on a marker, the name of the location can be seen. Observe the <code>content</code> variable. This string containts the HTML markup for the overlay content. You will notice that the <code>title</code> variable is concatenated within this string. This ensures that the title (which usually is the name of the location) of each marker appears in this overlay/window. Then, the information window is created and its content is assigned, as shown in the function. Lastly, we need to attach click listeners to activate the toggle functionality of the overlay. Notice the two listener bindings. The first one binds a click event to the created marker object. When the marker is clicked, its respective information window pops up. This is done through <code>info_window.open(map, markers[id]);</code>. The second listener binds a click event to the map object. When the map is clicked, any open information window is closed. This works well because the only interactive elements of the map are the map object and the toolbar in the bottom. This is done through <code>info_window.close();</code>. Thus, we enable toggle functionality for the information overlays of created markers.
+					<br/><br/>
+					We also want to be able to save the location of the marker when clicked so that the user can plot a location from his/her current location to the marker's position. And as a matter of usability, we want to snap the map to the marker's position. These must all be handled by the marker's click listener. The binding code should be modified and must finally look something like this:
+<pre>
+	google.maps.event.addListener(markers[id], 'click',
+		function ()
+		{
+			saveToLocalStorage(position);
+			checkMapZoom(map.getZoom())
+			map.setCenter(position);
+				
+			info_window.open(map, markers[id]);
+		}
+	);
+</pre>					
+					For obvious reasons, we do not want to create a new marker for repeated locations. To solve this issue, simply enclose all of the existing function code into a conditional structure. Simply perform a check to see if <code>markers</code> already contains the marker as one of its properties. If <b>yes</b>, then the existing marker is simply placed on the map once again. The conditional structure should look as follows:
+<pre>
+	if (!markers.hasOwnProperty(id))
+	{
+		//
+		// Function code
+		//
+	}
+	else
+		markers[id].setMap(map);
+</pre>
+					We have now successfully abstracted away the marker creation process from the rest of the application.
 				</p>
 				
 				<h4>Update Markers</h4>
@@ -174,7 +231,7 @@
 		, {enableHighAccuracy: true});
 	} 
 </pre>										
-					Note that basic error-handling has been done that checks if location services are supported/enabled by the device. But we have not yet properly handled the case that it is not supported. Create an <code>else</code> structure associated with the <code>if</code> structure.  Additionally, complete the <code>switch</code> structure to include the following cases: <code>POSITION_UNAVAILABLE</code>, <code>TIMEOUT</code> and <code>UNKNOWN_ERROR</code>. We also do not want to simply notify the user if the geolocation request returned an error, so we call the <code>errorCallback()</code> function right after the <code>switch</code> structure to handle the error. Now, recall that the error callback function is an optional argument, therefore check if it was provided. If yes, execute it; if not, simply ignore it or notify the user that geolocation services are not supported/enabled by the device, whichever you need to do. The entire function should now look something like this:
+					Note that basic error-handling has been done that checks if location services are supported/enabled by the device. But we have not yet properly handled the case that it is not supported. Create an <code>else</code> structure associated with the <code>if</code> structure.  Additionally, complete the <code>switch</code> structure to include the following cases: <code>POSITION_UNAVAILABLE</code>, <code>TIMEOUT</code> and <code>UNKNOWN_ERROR</code>. We also do not want to simply notify the user if the geolocation request returned an error, so we call the <code>errorCallback()</code> function right after the <code>switch</code> structure to handle the error. Now, recall that the error callback function is an optional argument, therefore check if it was provided. If <b>yes</b>, execute it; if <b>not</b>, simply ignore it or notify the user that geolocation services are not supported/enabled by the device, whichever you need to do. The entire function should now look something like this:
 <pre>
 	if (navigator.geolocation)
 	{
