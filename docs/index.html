@@ -106,58 +106,113 @@
 					Now let us work on the meat of the application. For the rest of this section, you will remain in <code>skeleton.js</code> unless specified otherwise.
 				</p>
 
-				<h4>Initialize the Map</h4>	
+				<h4>Initialize The Map</h4>	
 				<p>
 					We first need to deal with some start-up initializations. Take a look at the global variables right now. When the application loads, it first renders the marked up interface followed by the Google Maps object. asd
+				</p>												
+				
+				
+				<h4>Mark Building On Map</h4>
+				<p>
+				</p>
+				
+				<h4>Snap To User</h4>
+				<p>
+				</p>
+				
+				<h4>Save User's Current Location</h4>
+				<p>
+				</p>
+				
+				<h4>Plot Path Between Locations</h4>
+				<p>
+				</p>
+				
+				<h4>Search For POIs</h4>
+				<p>
+				</p>
+				
+				<h4>Restrict Map Zoom Level</h4>
+				<p>
 				</p>				
 				
-				<h4></h4>
-				<p>					
-				</p>
+				<h4>Render Path</h4>
+				<p>
+				</p>								
 				
-				<h4></h4>
+				<h4>Create Marker</h4>
 				<p>
 				</p>
 				
-				<h4></h4>
+				<h4>Update Markers</h4>
 				<p>
 				</p>
 				
-				<h4></h4>
+				<h4>Request User's Current Location</h4>
 				<p>
-				</p>
-				
-				<h4></h4>
-				<p>
-				</p>
-				
-				<h4></h4>
-				<p>
-				</p>
-				
-				<h4></h4>
-				<p>
-				</p>
-				
-				<h4></h4>
-				<p>
-				</p>
-				
-				<h4></h4>
-				<p>
-				</p>
-				
-				<h4></h4>
-				<p>
-				</p>
-				
-				<h4></h4>
-				<p>
-				</p>
-				
-				<h4></h4>
-				<p>
-				</p>
+					Probably the most important functionality of the application is the ability to know the user's current location at any given time. Examine the function <code>getUserLocation(callback, errorCallback)</code> carefully. The signature indicates that it takes in two callback functions as arguments, <code>callback</code> and <code>errorCallback</code> (which is an optional argument). You must already be familiar with using the <code>navigator.geolocation</code> object from the HTML5 specification. To retrieve the user's current position, one would usually just invoke the <code>getCurrentPosition(success, error, options)</code> method and work with the retrieved <code>position</code> object in the <code>success(position)</code> callback function while handling errors in the <code>error(error)</code> callback function. But this only works for one way of using this feature. Since we will be using this feature frequently and in various use cases, we need to abstract away what we do with <code>position</code> from the function. Here is where the <code>callback</code> argument of the function plays its role. The actual processing of the user's position will be done within this callback function. Here is the signature of <code>callback</code>: <code>callback(position)</code>. All we need to do is call <code>callback</code> within the <code>success</code> callback and pass <code>position</code> into it. All this might sound very confusing but all you really have to do is add 1 line of code. Here is what the entire code looks like so far:
+<pre>
+	// Geolocation services must be enabled
+	if (navigator.geolocation)
+	{
+		navigator.geolocation.getCurrentPosition(			
+ 			function (position)
+			{					
+				// Do something with the current position
+				callback(position);
+			}
+			// Deal with errors
+			, function (error)
+			{
+				switch(error.code)
+				{
+					case error.PERMISSION_DENIED:
+						alert("Error: Denied access to location services!");
+						break;
+				}				
+			}
+		, {enableHighAccuracy: true});
+	} 
+</pre>										
+					Note that basic error-handling has been done that checks if location services are supported/enabled by the device. But we have not yet properly handled the case that it is not supported. Create an <code>else</code> structure associated with the <code>if</code> structure.  Additionally, complete the <code>switch</code> structure to include the following cases: <code>POSITION_UNAVAILABLE</code>, <code>TIMEOUT</code> and <code>UNKNOWN_ERROR</code>. We also do not want to simply notify the user if the geolocation request returned an error, so we call the <code>errorCallback()</code> function right after the <code>switch</code> structure to handle the error. Now, recall that the error callback function is an optional argument, therefore check if it was provided. If yes, execute it; if not, simply ignore it or notify the user that geolocation services are not supported/enabled by the device, whichever you need to do. The entire function should now look something like this:
+<pre>
+	if (navigator.geolocation)
+	{
+		navigator.geolocation.getCurrentPosition(			
+ 			function (position)
+			{					
+				// Do something with the current position
+				callback(position);
+			}
+			// Deal with errors
+			, function (error)
+			{
+				switch(error.code)
+				{
+					case error.PERMISSION_DENIED:
+						alert("Error: Denied access to location services!");
+						break;
+					//
+					// Perform other switch cases
+					//
+				}		
+				// Call the error callback function if provided, else do nothing
+				if (errorCallback !== undefined)
+					errorCallback();
+			}
+		, {enableHighAccuracy: true});
+	}
+	else
+	{
+		// If the error callback function is not provided, just notify the user
+		if (errorCallback === undefined)
+			alert("Error: Geolocation services are not supported by your device!");
+		else
+			errorCallBack();
+	}
+</pre>				
+					We now have a flexible function for retrieving the current location of the user whenever needed.
+				</p>												
 
 				<h4>Save Location For Later Use</h4>
 				<p>
@@ -199,10 +254,12 @@
 	
 	return loaded_location;	
 </pre>					
-					Our function will now load and return the last saved location, as long as the local storage API is supported. But we are missing one crucial boundary case: what if there is no previously saved location in the first place? This would be the case when the application is run for the very first time, or if the local web storage was cleared. In order to handle this, we need to know what happens when a JavaScript object either does not exist or is not assigned any value.
+					Our function will now load and return the last saved location, as long as the local storage API is supported. But we are missing one crucial boundary case: what if there is no previously saved location in the first place? This would be the case when the application is run for the very first time, or if the local web storage was cleared/deleted. In order to handle this, we need to check if the <code>localStorage</code> object has the property <code>savedLocation</code>. If this is not true, then notify the user and return <code>undefined</code>.
+					<br/><br/>					
+					You will understand the reasoning behind returning <code>undefined</code> when we use this function later.
 				</p>				
 				
-				<h4>Refresh the Map</h4>
+				<h4>Refresh The Map</h4>
 				<p>
 					When the user continues using the app for a prolonged period of time without closing it, the map will eventually become cluttered with markers and polyline paths. This significantly bogs down performance and makes it hard to navigate through the map. To remedy this, we need a way to remove all overlays from the map, thereby "refreshing" it. Go to the <code>clear()</code> function towards the end of the code. Our goal is to 1) clear any text in the search text entry field, 2) clear all rendered markers and 3) clear all rendered paths.
 					<br/>
@@ -231,7 +288,9 @@
 				
 				<h4>Empty Local Storage</h4>
 				<p>
-					The user might want to clear their local web storage from time to time. This is similar to deleting cookies at the end of a browser session. This is very easy to accomplish. Go to the <code>clearStorage</code> function. All we need to do is clear the contents of the <code>localStorage.savedLocation</code> variable. In JavaScript, you can do this by typing <code>delete localStorage.savedLocation;</code>. This will set <code>localStorage.savedLocation</code> to <code>undefined</code>. It is probably advisable to notify the user of this operation, so go ahead and send an <code>alert("Notice: All saved locations have been cleared!");</code> after the line. Now, realize that we once again can not expect all users' devices/browsers to support HTML5 local storage, so we must check for this and notify the user accordingly just as we did earlier.
+					The user might want to clear their local web storage from time to time. This is similar to deleting cookies at the end of a browser session. This is very easy to accomplish. Go to the <code>clearStorage</code> function. All we need to do is clear the contents of the <code>localStorage.savedLocation</code> variable. In JavaScript, you can do this by typing <code>delete localStorage.savedLocation;</code>. This will set <code>localStorage.savedLocation</code> to <code>undefined</code>. It is probably advisable to notify the user of this operation, so go ahead and send an <code>alert("Notice: All saved locations have been cleared!");</code> after the line. 
+					<br/><br/>
+					Finally, realize that we once again can not expect all users' devices/browsers to support HTML5 local storage, so we must check for this and notify the user accordingly just as we did earlier.
 				</p>
 			</div>
 			

@@ -433,6 +433,10 @@ function snap ()
 		{
 			var location = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);											
 			updateMarkers([markers.user], [location], location)			
+		},
+		function ()
+		{
+			map.setCenter(stone_gordon);
 		}
 	);	
 }
@@ -452,16 +456,14 @@ function save ()
 // Plot a path from the user's current location to the desired destination
 function plot (destination) 
 {	
+	// If a destination has not been provided, load from local web storage (HTML 5)
 	if (destination === undefined) 			
 		destination = loadFromLocalStorage();
 
 	getUserLocation(
 		function (position)
 		{
-			 var origin = new google.maps.LatLng(position.coords.latitude, position.coords.longitude); // User's current location
-			// If a destination has not been provided, load from local web storage (HTML 5)
-			// if (destination === undefined) 			
-				// var destination = loadFromLocalStorage();
+			var origin = new google.maps.LatLng(position.coords.latitude, position.coords.longitude); // User's current location						
 							
 			if (destination !== undefined) // If a destination does exist (Note that loadFromLocalStorage() can return undefined			
 			{
@@ -504,8 +506,7 @@ function search ()
 		
 	var request = 
 	{
-		keyword: input,
-		// location: new google.maps.LatLng(43.52920131802691, -80.22871387117925),
+		keyword: input,		
 		location: campus_center,
 		radius: search_radius.toString()		
 	}
@@ -545,7 +546,17 @@ function search ()
 				}				
 			}
 			else if (status == google.maps.places.PlacesServiceStatus.ZERO_RESULTS)			
-				alert("Search: No results were found for \"" + input + "\"");			
+				alert("Search: No results were found for \"" + input + "\"");
+			else if (status == google.maps.places.PlacesServiceStatus.INVALID_REQUEST)
+				alert("Error: The request was invalid!");
+			else if (status == google.maps.places.PlacesServiceStatus.OVER_QUERY_LIMIT)
+				alert("Error: You have exceeded the search request quota. Try again in 48 hours!");
+			else if (status == google.maps.places.PlacesServiceStatus.REQUEST_DENIED)
+				alert("Error: Forbidden access. The request is not allowed to be processed!");
+			else if (status == google.maps.places.PlacesServiceStatus.UNKNOWN_ERROR)
+				alert("Error: The search request could not be processed due to a server error. Please try again later!");
+			else if (status == google.maps.places.PlacesServiceStatus.ERROR)
+				alert("Error: There was a problem contacting the Google servers!");
 			
 			// The response contains max 20 locations per request; we must scroll through the remaining 'pages' of results
 			if (pagination.hasNextPage)
@@ -651,7 +662,7 @@ function updateMarkers (markers, positions, center)
 
 
 // Compute the current position/location of the user
-function getUserLocation (callback, error)
+function getUserLocation (callback, errorCallback)
 {
  	// Geolocation services must be enabled
 	if (navigator.geolocation)
@@ -662,6 +673,7 @@ function getUserLocation (callback, error)
 				// Do something with the current position
 				callback(position);
 			}
+			// Deal with errors
 			, function (error)
 			{
 				switch(error.code)
@@ -679,22 +691,23 @@ function getUserLocation (callback, error)
 						alert("Error: An unknown error has occurred!");
 						break;
 				}
-				error();
+				if (errorCallback !== undefined)
+					errorCallback();
 			}
-		, {enableHighAccuracy: true, timeout: 27000});
+		, {enableHighAccuracy: true});
 	} 
 	else
 	{
-		if (error === undefined)
+		if (errorCallback === undefined)
 			alert("Error: Geolocation services are not supported by your device!");
 		else
-			error();
+			errorCallback();
 	}
 		
 }
 
 // Track the current location of the user's device
-function watchUserLocation (callback, error)
+function watchUserLocation (callback, errorCallback)
 {
  	// Geolocation services must be enabled
 	if (navigator.geolocation)
@@ -706,6 +719,7 @@ function watchUserLocation (callback, error)
 				// Do something with the current position
 				callback(position);
 			}
+			// Deal with errors
 			, function (error)
 			{
 				switch(error.code)
@@ -723,15 +737,17 @@ function watchUserLocation (callback, error)
 						alert("Error: An unknown error has occurred!");
 						break;
 				}
+				if (errorCallback !== undefined)
+					errorCallback();
 			}
-		, {enableHighAccuracy: true, timeout: 27000});
+		, {enableHighAccuracy: true});
 	} 
 	else
 	{
-		if (error === undefined)
+		if (errorCallback === undefined)
 			alert("Error: Geolocation services are not supported by your device!");
 		else
-			error();
+			errorCallback();
 	}
 }
 
