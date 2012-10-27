@@ -113,10 +113,53 @@
 					We first need to deal with some start-up initializations. Take a look at the global variables right now. When the application loads, it first renders the marked up interface followed by the Google Maps object. asd
 				</p>												
 				
-				
-				<h4>Mark Building On Map</h4>
+
+				<h4>Create Marker</h4>
 				<p>
+					Due to the nature of the application, we will have an indefinite and sometimes large number of markers on the map. In order to efficiently work with them, we store all markers in a global JavaScript object <code>markers</code>. Thus, we abstract the marker creation process into a separate function that appends newly created markers to this object. We will take advantage of the fact that JavaScript objects can function like associative arrays, so each marker is added as a property of the <code>markers</code> object<sup>*Objects as associative arrays</sup>.
+					<br/><br/>
+					Go to the <code>createMarker(id, position, title, icon)</code> function. The first and most important step is to create the marker object. Assign to <code>marker_options</code> the following properties: the <code>map</code> it belongs to; its <code>position</code> (a <code>google.maps.LatLng</code> object); and a <code>title</code> that briefly describes the marker. The <code>map</code> global variable is obviously the map; the <code>position</code> and <code>title</code> arguments of the function satisfy the next two properties. Now the icon uri that contains the image of the marker is an optional argument to the function, so we need to handle this. This can be done as follows:
+<pre>
+	if (icon !== undefined)
+		marker_options.icon = icon;
+</pre>
+					We need a unique identifier in order to represent each <code>markers</code> property as a marker object. This is satisfied via the <code>id</code> argument. We now have everything we need to create the marker object, so type the following code:
+<pre>
+	markers[id] = new google.maps.Marker(marker_options);
+</pre>
+					Next, we need to create an information window overlay so that when the user clicks on a marker, the name of the location can be seen. Observe the <code>content</code> variable. This string containts the HTML markup for the overlay content. You will notice that the <code>title</code> variable is concatenated within this string. This ensures that the title (which usually is the name of the location) of each marker appears in this overlay/window. Then, the information window is created and its content is assigned, as shown in the function. Lastly, we need to attach click listeners to activate the toggle functionality of the overlay. Notice the two listener bindings. The first one binds a click event to the created marker object. When the marker is clicked, its respective information window pops up. This is done through <code>info_window.open(map, markers[id]);</code>. The second listener binds a click event to the map object. When the map is clicked, any open information window is closed. This works well because the only interactive elements of the map are the map object and the toolbar in the bottom. This is done through <code>info_window.close();</code>. Thus, we enable toggle functionality for the information overlays of created markers.
+					<br/><br/>
+					We also want to be able to save the location of the marker when clicked so that the user can plot a location from his/her current location to the marker's position. And as a matter of usability, we want to snap the map to the marker's position. These must all be handled by the marker's click listener. The binding code should be modified and must finally look something like this:
+<pre>
+	google.maps.event.addListener(markers[id], 'click',
+		function ()
+		{
+			saveToLocalStorage(position);
+			checkMapZoom(map.getZoom())
+			map.setCenter(position);
+				
+			info_window.open(map, markers[id]);
+		}
+	);
+</pre>					
+					For obvious reasons, we do not want to create a new marker for repeated locations. To solve this issue, simply enclose all of the existing function code into a conditional structure. Simply perform a check to see if <code>markers</code> already contains the marker as one of its properties. If <b>yes</b>, then the existing marker is simply placed on the map once again. The conditional structure should look as follows:
+<pre>
+	if (!markers.hasOwnProperty(id))
+	{
+		//
+		// Function code
+		//
+	}
+	else
+		markers[id].setMap(map);
+</pre>
+					We have now successfully abstracted away the marker creation process from the rest of the application.
 				</p>
+				
+				<h4>Update Markers</h4>
+				<p>
+					Just as we developed a general method to batch create markers, we also need to be able to update the position(s) of a marker or an array of markers. 
+				</p>				
 				
 				<h4>Request User's Current Location</h4>
 				<p>
@@ -186,6 +229,7 @@
 				
 				<h4>Snap To User</h4>
 				<p>
+					The primal feature of the application is being able to snap/center the map on the user's current location. Consider the function <code>snap()</code>. It must work in tandem with <code>getUserLocation(callback)</code> in order to 
 				</p>
 				
 				<h4>Save User's Current Location</h4>
@@ -224,6 +268,10 @@
 				</p>
 				
 
+				<h4>Mark Building On Map</h4>
+				<p>
+				</p>				
+				
 				<h4>Load Last Saved Location</h4>
 				<p>
 					Once we have stored our data persistently, we must also be able to access it from local storage whenever its use is required. Take a look at the <code>loadFromLocalStorage()</code> function. Since we will be using the local web storage API once again, we obviously need to check to see if it is supported. You can see a conditional structure there exactly like the one from the <code>saveToLocalStorage(location)</code> function that we previously worked on. All we need to do is load the previously saved string representation of the location into a <code>google.maps.LatLng</code> object and then return this object to the caller. Recall that in the <code>saveToLocalStorage(location)</code> function, we used the <code>JSON.stringify(object)</code> method to convert <code>data</code> to a JSON string and stored it in <code>localStorage.savedLocation</code>. So we just need to get back the <code>data</code> object from <code>localStorage.savedLocation</code>, and we can do this by parsing the string using <code>JSON.parse(string)</code>. Store this in <code>data</code>, create a location object using <code>data.lat</code> and <code>data.lng</code> and then return this location. Your code should now look something like this:
@@ -239,7 +287,21 @@
 				</p>				
 				
 				<h4>Render Path</h4>
-				<p>					
+				<p>
+					The <code>render(origin, destination)</code> helper function takes in two arguments, <code>origin</code> and <code>destination</code>, which are of type <code>google.maps.LatLng</code>. These obviously are the two points between which a path needs to be drawn. To create this path, we need to compute the directions from the origin point to the destination point. This is done using the Google Directions API. Note the global variables <code>directions_service</code> and <code>directions_display</code>. They were initialized as <code>google.maps.DirectionsService</code> and <code>google.maps.DirectionsRenderer</code> objects respectively. These are required in order to subscribe to the Directions API, as mentioned earlier. Now get into the function and take a look at its code. The <code>request</code> object contains three self-explanatory properties that form the parameters for the Directions API request. We then invoke the <code>route(request, callback)</code> method in order to compute the directions between <code>origin</code> and <code>destination</code>. The callback function is used to do something with the response. It needs to pass two arguments: <code>result</code>, which contains the results of the request, and <code>status</code> which indicates the status of the response. So create an anonymous function of the same signature and then create an <code>if</code> conditional structure that checks if <code>status</code> evaluates to <code>google.maps.DirectionsStatus.OK</code>. Within this structure (i.e. if the condition is true, then) use <code>directions_display</code> to render the polyline represented by the resultant directions on the map. Additionally, snap the map to the destination point (or the origin point; whichever you prefer) so that the user always sees where he/she needs to go to (or where he/she is present at the moment). Your anonymous function should look something like this:
+<pre>
+	function (result, status)
+	{
+		if (status == google.maps.DirectionsStatus.OK)
+		{
+			// Render the directions polyline
+			directions_display.setMap(map);
+			directions_display.setDirections(result);
+			map.setCenter(destination);
+		}
+	}
+</pre>
+					We have now created the helper function for actually rendering the polyline path between two points on the map. This function can be called by <code>plot()</code> if the origin must be evaluated as the user's current location. If another origin point is known, the function can be called directly as well.
 				</p>
 				
 				<h4>Plot Path Between Locations</h4>
@@ -273,7 +335,12 @@
 			{
 				// etc. etc. as instructed above
 			}
-		);
+		),
+		function ()
+		{
+			map.setCenter(stone_gordon);
+		}
+	);
 	}
 </pre>
 					Thus, we can now plot a path between two locations on the map.
@@ -307,52 +374,7 @@
 				
 							
 				
-				<h4>Create Marker</h4>
-				<p>
-					Due to the nature of the application, we will have an indefinite and sometimes large number of markers on the map. In order to efficiently work with them, we store all markers in a global JavaScript object <code>markers</code>. Thus, we abstract the marker creation process into a separate function that appends newly created markers to this object. We will take advantage of the fact that JavaScript objects can function like associative arrays, so each marker is added as a property of the <code>markers</code> object<sup>*Objects as associative arrays</sup>.
-					<br/><br/>
-					Go to the <code>createMarker(id, position, title, icon)</code> function. The first and most important step is to create the marker object. Assign to <code>marker_options</code> the following properties: the <code>map</code> it belongs to; its <code>position</code> (a <code>google.maps.LatLng</code> object); and a <code>title</code> that briefly describes the marker. The <code>map</code> global variable is obviously the map; the <code>position</code> and <code>title</code> arguments of the function satisfy the next two properties. Now the icon uri that contains the image of the marker is an optional argument to the function, so we need to handle this. This can be done as follows:
-<pre>
-	if (icon !== undefined)
-		marker_options.icon = icon;
-</pre>
-					We need a unique identifier in order to represent each <code>markers</code> property as a marker object. This is satisfied via the <code>id</code> argument. We now have everything we need to create the marker object, so type the following code:
-<pre>
-	markers[id] = new google.maps.Marker(marker_options);
-</pre>
-					Next, we need to create an information window overlay so that when the user clicks on a marker, the name of the location can be seen. Observe the <code>content</code> variable. This string containts the HTML markup for the overlay content. You will notice that the <code>title</code> variable is concatenated within this string. This ensures that the title (which usually is the name of the location) of each marker appears in this overlay/window. Then, the information window is created and its content is assigned, as shown in the function. Lastly, we need to attach click listeners to activate the toggle functionality of the overlay. Notice the two listener bindings. The first one binds a click event to the created marker object. When the marker is clicked, its respective information window pops up. This is done through <code>info_window.open(map, markers[id]);</code>. The second listener binds a click event to the map object. When the map is clicked, any open information window is closed. This works well because the only interactive elements of the map are the map object and the toolbar in the bottom. This is done through <code>info_window.close();</code>. Thus, we enable toggle functionality for the information overlays of created markers.
-					<br/><br/>
-					We also want to be able to save the location of the marker when clicked so that the user can plot a location from his/her current location to the marker's position. And as a matter of usability, we want to snap the map to the marker's position. These must all be handled by the marker's click listener. The binding code should be modified and must finally look something like this:
-<pre>
-	google.maps.event.addListener(markers[id], 'click',
-		function ()
-		{
-			saveToLocalStorage(position);
-			checkMapZoom(map.getZoom())
-			map.setCenter(position);
-				
-			info_window.open(map, markers[id]);
-		}
-	);
-</pre>					
-					For obvious reasons, we do not want to create a new marker for repeated locations. To solve this issue, simply enclose all of the existing function code into a conditional structure. Simply perform a check to see if <code>markers</code> already contains the marker as one of its properties. If <b>yes</b>, then the existing marker is simply placed on the map once again. The conditional structure should look as follows:
-<pre>
-	if (!markers.hasOwnProperty(id))
-	{
-		//
-		// Function code
-		//
-	}
-	else
-		markers[id].setMap(map);
-</pre>
-					We have now successfully abstracted away the marker creation process from the rest of the application.
-				</p>
-				
-				<h4>Update Markers</h4>
-				<p>
-					Just as we developed a general method to batch create markers, we also need to be able to update the position(s) of a marker or an array of markers. 
-				</p>
+
 																											
 				
 				<h4>Refresh The Map</h4>

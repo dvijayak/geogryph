@@ -432,8 +432,12 @@ function snap ()
 		{
 			var location = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);											
 			updateMarkers([markers.user], [location], location)			
+		},	
+		function ()
+		{
+			map.setCenter(stone_gordon);
 		}
-	);	
+	);		
 }
 
 // Save the user's current location in local web storage (HTML5)
@@ -444,6 +448,10 @@ function save ()
 		{
 			var location = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);			
 			saveToLocalStorage(location);						
+		},
+		function ()
+		{
+			map.setCenter(stone_gordon);
 		}
 	);
 }
@@ -463,6 +471,10 @@ function plot (destination)
 																
 				render(origin, destination);								
 				updateMarkers([markers.user, markers.destination], [origin, destination]);	 */			
+			},
+			function ()
+			{
+				map.setCenter(stone_gordon);
 			}
 		);
 	}	
@@ -548,7 +560,7 @@ function checkMapZoom (current_zoom)
 	} */
 }
 
-// Takes an origin and a destination location, plots the directions between the two and then renders the path on the map
+// [DONE] Takes an origin and a destination location, plots the directions between the two and then renders the path on the map
 function render (origin, destination)
 {
 	// Calculate the route using the directions API
@@ -556,19 +568,19 @@ function render (origin, destination)
 	{
 		origin: origin,
 		destination: destination,
-		travelMode: google.maps.TravelMode.WALKING // Can be a Preference parameter
+		travelMode: google.maps.TravelMode.WALKING // This is the most appropriate mode for the use of this application
 	};
 	
 	directions_service.route(request, 
 		function (result, status)
 		{
-			if (status == google.maps.DirectionsStatus.OK)
+			/* if (status == google.maps.DirectionsStatus.OK)
 			{					
 				// Render the directions path(s)
 				directions_display.setMap(map);
 				directions_display.setDirections(result);
 				map.setCenter(destination);
-			}
+			} */
 		}
 	);		 	
 }

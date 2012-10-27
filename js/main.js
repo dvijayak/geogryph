@@ -448,6 +448,10 @@ function save ()
 		{
 			var location = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);			
 			saveToLocalStorage(location);						
+		},
+		function ()
+		{
+			map.setCenter(stone_gordon);
 		}
 	);
 }
@@ -468,6 +472,10 @@ function plot (destination)
 																
 				render(origin, destination);								
 				updateMarkers([markers.user, markers.destination], [origin, destination]);				
+			},
+			function ()
+			{
+				map.setCenter(stone_gordon);
 			}
 		);
 	}	
