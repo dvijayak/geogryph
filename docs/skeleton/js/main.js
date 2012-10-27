@@ -448,25 +448,24 @@ function save ()
 	);
 }
 
-// Plot a path from the user's current location to the desired destination
+// [DONE] Plot a path from the user's current location to the desired destination
 function plot (destination) 
 {	
-	// If a destination has not been provided, load from local web storage (HTML 5)
+	/* // If a destination has not been provided, load from local web storage (HTML 5)
 	if (destination === undefined) 			
-		destination = loadFromLocalStorage();
-
-	getUserLocation(
-		function (position)
-		{
-			var origin = new google.maps.LatLng(position.coords.latitude, position.coords.longitude); // User's current location						
-							
-			if (destination !== undefined) // If a destination does exist (Note that loadFromLocalStorage() can return undefined			
+		destination = loadFromLocalStorage(); */
+	if (destination !== undefined) // If a destination does exist (Note that loadFromLocalStorage() can return undefined
+	{
+		getUserLocation(
+			function (position)
 			{
+				/* var origin = new google.maps.LatLng(position.coords.latitude, position.coords.longitude); // User's current location						
+																
 				render(origin, destination);								
-				updateMarkers([markers.user, markers.destination], [origin, destination]);
+				updateMarkers([markers.user, markers.destination], [origin, destination]);	 */			
 			}
-		}
-	);	
+		);
+	}	
 }
 
 // Search for points of interest and display them on the map
@@ -626,29 +625,25 @@ function createMarker (id, position, title, icon)
 function updateMarkers (markers, positions, center)
 {	
 	for (var i = 0; i < markers.length; i++)
-	{		
-		if (markers[i] !== undefined)
-		{
-			markers[i].setMap(map);
+	{								
+		
+		markers[i].setPosition(positions[i]);					
+		markers[i].setMap(map);
 			
-			if (positions[i] !== undefined)			
-				markers[i].setPosition(positions[i]);		
-				
-			// Optional: Center the map on a marker position
-			if (center !== undefined)
-			{					
-				if (center == null)
-				{			
-					checkMapZoom(map.getZoom());
-					map.setCenter(markers[i].position);				
-				}
-				// Ensures that only one of the input markers can be focused on
-				else if (positions[i] == center)
-				{
-					checkMapZoom(map.getZoom());
-					map.setCenter(positions[i]);
-				}				
+		// Optional: Center the map on a marker position
+		if (center !== undefined)
+		{					
+			if (center == null)
+			{			
+				checkMapZoom(map.getZoom());
+				map.setCenter(markers[i].position);				
 			}
+			// Ensures that only one of the input markers can be focused on
+			else if (positions[i] == center)
+			{
+				checkMapZoom(map.getZoom());
+				map.setCenter(positions[i]);
+			}				
 		}					
 	}
 	
