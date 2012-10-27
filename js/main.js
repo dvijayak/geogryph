@@ -431,7 +431,7 @@ function snap ()
 		function (position)
 		{
 			var location = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);											
-			updateMarkers([markers.user], [location], location)			
+			updateMarkers([markers.user], [location], location);
 		},
 		function ()
 		{

@@ -431,7 +431,7 @@ function snap ()
 		function (position)
 		{
 			/* var location = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);											
-			updateMarkers([markers.user], [location], location)		 */	
+			updateMarkers([markers.user], [location], location);		 */	
 		},	
 		function ()
 		{
@@ -440,20 +440,20 @@ function snap ()
 	);		
 }
 
-// Save the user's current location in local web storage (HTML5)
+// [DONE] Save the user's current location in local web storage (HTML5)
 function save () 
 {
-	getUserLocation(
+	/* getUserLocation(
 		function (position)
 		{
 			var location = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);			
-			saveToLocalStorage(location);						
+			saveToLocalStorage(location);
 		},
 		function ()
 		{
 			map.setCenter(stone_gordon);
 		}
-	);
+	); */
 }
 
 // [DONE] Plot a path from the user's current location to the desired destination

@@ -246,6 +246,37 @@
 				
 				<h4>Save User's Current Location</h4>
 				<p>
+					An important aspect of the Trip Recorder feature is the ability to save the user's current location persistently and then access it at a later time for processing. This can be very easily accomplished following the structure of the <code>snap()</code> function that we just finished above. Go to the <code>save()</code> function and copy the contents of <code>snap()</code> into it. The function should look something like this:
+<pre>
+	getUserLocation(
+		function (position)
+		{
+			var location = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);			
+			updateMarkers([markers.user], [location], location);				
+		},
+		function ()
+		{
+			map.setCenter(stone_gordon);
+		}
+	); 
+</pre>					
+					We are doing exactly the same thing as before with the one exception that instead of updating the position of any marker, we save the user's current location in local web storage. To do this, delete the <code>updateMarkers</code> line and replace it with a call to <code>saveToLocalStorage(location)</code>. Your final code should be something like this:
+<pre>
+	getUserLocation(
+		function (position)
+		{
+			var location = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);			
+			saveToLocalStorage(location);
+		},
+		function ()
+		{
+			map.setCenter(stone_gordon);
+		}
+	); 
+</pre>				
+					As a side note, we are automatically handling the error callback due to the copying of the previous code.
+					<br/><br/>
+					Thus, our application can now save a locaton persistently in the local web storage of the user's device/browser.
 				</p>
 				
 				<h4>Save Location For Later Use</h4>
