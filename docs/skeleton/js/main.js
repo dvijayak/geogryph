@@ -230,6 +230,7 @@ var path_stylesheets = "css/";
 var path_scripts = "js/";
 var path_icon_me = path_images + "me.png";
 var blue_marker = path_images + "blue_marker.png"; 
+var red_university = path_images + "university.png";
 
 // External resources (if any)
 
@@ -397,7 +398,7 @@ function initializeMap ()
 }
 
 
-// Select (mark) a building to save in local web storage (HTML 5)
+// [DONE] Select (mark) a building to save in local web storage (HTML 5)
 function mark ()
 {
 	var select = document.getElementById("buildings");
@@ -405,21 +406,20 @@ function mark ()
 	
 	if (value != "null") // Does nothing if user selects the placeholder '<Buildings>' option
 	{
-		// Create an object representing the selected building	
+		/* // Create an object representing the selected building	
 		var selected_building = buildings[value];						
 	
-		// Snap map to center on the marker
-		if (markers.hasOwnProperty(value))						
-			updateMarkers([markers[value]], [undefined], null);		
-		// Create it if it doesn't exist
-		else 
+		// Snap to/Center on the marker
+		if (markers.hasOwnProperty(value)) // If the marker already exists						
+			updateMarkers([markers[value]], [undefined], null);				
+		else // Create it if it doesn't exist
 		{		
-			createMarker(value, selected_building.LatLng, selected_building.name, path_images + "university.png");	
+			createMarker(value, selected_building.LatLng, selected_building.name, red_university);	
 			checkMapZoom(map.getZoom());			
 		}
 
 		// Save the marked building location to local web storage (HTML 5)
-		saveToLocalStorage(selected_building.LatLng);		
+		saveToLocalStorage(selected_building.LatLng);	 */	
 	}		
 	
 }
@@ -632,14 +632,15 @@ function createMarker (id, position, title, icon)
 		markers[id].setMap(map); */
 }
 
-// Update the position of the inputted markers on the map
+// [DONE] Update the position of the inputted markers on the map
 // Optional: Center the map on one of the inputted markers
 function updateMarkers (markers, positions, center)
 {	
 	for (var i = 0; i < markers.length; i++)
-	{								
-		
-		markers[i].setPosition(positions[i]);					
+	{										
+		/* if (positions[i] !== undefined)
+			markers[i].setPosition(positions[i]);				
+			
 		markers[i].setMap(map);
 			
 		// Optional: Center the map on a marker position
@@ -654,9 +655,9 @@ function updateMarkers (markers, positions, center)
 			else if (positions[i] == center)
 			{
 				checkMapZoom(map.getZoom());
-				map.setCenter(positions[i]);
+				map.setCenter(center);
 			}				
-		}					
+		}	 */				
 	}
 	
 }

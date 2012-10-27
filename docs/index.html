@@ -113,12 +113,11 @@
 					We first need to deal with some start-up initializations. Take a look at the global variables right now. When the application loads, it first renders the marked up interface followed by the Google Maps object. asd
 				</p>												
 				
-
 				<h4>Create Marker</h4>
 				<p>
 					Due to the nature of the application, we will have an indefinite and sometimes large number of markers on the map. In order to efficiently work with them, we store all markers in a global JavaScript object <code>markers</code>. Thus, we abstract the marker creation process into a separate function that appends newly created markers to this object. We will take advantage of the fact that JavaScript objects can function like associative arrays, so each marker is added as a property of the <code>markers</code> object<sup>*Objects as associative arrays</sup>.
 					<br/><br/>
-					Go to the <code>createMarker(id, position, title, icon)</code> function. The first and most important step is to create the marker object. Assign to <code>marker_options</code> the following properties: the <code>map</code> it belongs to; its <code>position</code> (a <code>google.maps.LatLng</code> object); and a <code>title</code> that briefly describes the marker. The <code>map</code> global variable is obviously the map; the <code>position</code> and <code>title</code> arguments of the function satisfy the next two properties. Now the icon uri that contains the image of the marker is an optional argument to the function, so we need to handle this. This can be done as follows:
+					Go to the <code>createMarker(id, position, title, icon?)</code> function. The first and most important step is to create the marker object. Assign to <code>marker_options</code> the following properties: the <code>map</code> it belongs to; its <code>position</code> (a <code>google.maps.LatLng</code> object); and a <code>title</code> that briefly describes the marker. The <code>map</code> global variable is obviously the map; the <code>position</code> and <code>title</code> arguments of the function satisfy the next two properties. Now the icon uri that contains the image of the marker is an optional argument to the function, so we need to handle this. This can be done as follows:
 <pre>
 	if (icon !== undefined)
 		marker_options.icon = icon;
@@ -137,7 +136,7 @@
 			saveToLocalStorage(position);
 			checkMapZoom(map.getZoom())
 			map.setCenter(position);
-				
+
 			info_window.open(map, markers[id]);
 		}
 	);
@@ -158,7 +157,46 @@
 				
 				<h4>Update Markers</h4>
 				<p>
-					Just as we developed a general method to batch create markers, we also need to be able to update the position(s) of a marker or an array of markers. 
+					Just as we developed a general method to batch create markers, we also need to be able to update the position(s) of a marker or an array of markers. Examine the <code>updateMarkers(markers, positions, center?)</code> function. The first two arguments are arrays of marker objects and positions (the latter being of type <code>google.maps.LatLng</code>. These two arrays must work in tandem, that is their orders must be reflective of each other. In other words, the marker at index 0 will be updated with the position at index 0, the marker at index 1 will be updated with the position at index 1, and so on and so forth<sup>*A BETTER WAY OF DOING THIS</sup>. So iterate through the array of markers (the <code>for</code> loop has already been provided) and update each position with the equivalent position from the array of position. We also need to handle the case where the marker overlay is not present on the map due to clearing the map. Set the map property of each marker as the global <code>map</code> object. Additionally, the value of a position can be <code>undefined</code>. This can happen when the position of the marker does not need to change but the marker simply needs to be redrawn on the map due to being cleared prior to this. So check if the corresponding <code>position</code> is <code>undefined</code>: if <b>not</b>, then only do we update the position of the marker. The code for the steps so far is as follows:
+<pre>
+	if (positions[i] !== undefined)
+			markers[i].setPosition(positions[i]);				
+			
+	markers[i].setMap(map);
+</pre>				
+					We now handle the optional <code>center</code> argument, which is of type <code>google.maps.LatLng</code>. You should be familiar with the general method of checking for an optional argument by now. The condition to check for is exactly the same as we did in the above function for creating markers. Check out the conditional structure that is present in the function right now and verify that it is correct. Now, if <code>center</code> <b>is</b> provided, we have two possible cases:
+					<ol>
+						<li>
+							<h4>Snap the map to any location</h4>
+							<p>
+								When the value of <code>center</code> <b>is <code>null</code></b>, we can choose any marker to be the center of the map. It is up to you how to go about choosing this marker. For the sake of simplicity (albeit at the cost of efficiency), feel free to center the map on each marker of the array. An alternative more efficient method would be to center the map on the last marker in the array, but implementing this is up to you.
+							</p>
+						</li>
+						<li>
+							<h4>Snap the map to the specified location</h4>
+							<p>
+								<b>Otherwise</b>, the value of <code>center</code> has been provided, so we simply need to center the map on <code>center</code>
+							</p>
+						</li>
+					</ol>
+					In both of the above cases, we need to restrict the zoom level of the map. Call <code>checkMapZoom(current_zoom)</code> and pass to it the current level of zoom of the map. The entire code for handling the optional <code>center</code> argument should now look something like this:
+<pre>
+	// Optional: Center the map on a marker position
+	if (center !== undefined)
+	{					
+		if (center == null)
+		{			
+			checkMapZoom(map.getZoom());
+			map.setCenter(markers[i].position);				
+		}		
+		else
+		{
+			checkMapZoom(map.getZoom());
+			map.setCenter(center);
+		}				
+	}	
+</pre>
+					We now have a flexible function that can update the positions of markers both on an individual basis as well as a batch process.
 				</p>				
 				
 				<h4>Request User's Current Location</h4>
@@ -246,7 +284,7 @@
 				
 				<h4>Save User's Current Location</h4>
 				<p>
-					An important aspect of the Trip Recorder feature is the ability to save the user's current location persistently and then access it at a later time for processing. This can be very easily accomplished following the structure of the <code>snap()</code> function that we just finished above. Go to the <code>save()</code> function and copy the contents of <code>snap()</code> into it. The function should look something like this:
+					An important aspect of the Trip Recorder feature is the ability to save the user's current location persistently and then access it at a later time for processing. This can be very easily accomplished following the structure of the <code>snap()</code> function that we just finished above. Go to the <code>save()</code> function and copy the contents of <code>snap()</code> into it. The function should at the moment look something like this:
 <pre>
 	getUserLocation(
 		function (position)
@@ -313,6 +351,24 @@
 
 				<h4>Mark Building On Map</h4>
 				<p>
+					Another main feature of the application is the ability to choose a building from a provided list and draw it on the map while also snapping to it. Centering/Snapping the map on/to the building helps the user know where the building is without having to look around on the map for the marker. Go to the <code>mark()</code> function and examine the code that is already present there. We obtain a reference to the <code>select</code> drop-down element from the user interface and store it in <code>select</code>. The value of the actual selection, which is a string that contains the abbreviation of the selected building, is stored in <code>value</code>. This string could also be <code>"null"</code>, which implies that the placeholder option was selected. The conditional structure that follows ensures that no processing is performed if <code>value</code> evaluates to <code>"null"</code>.
+					<br/><br/>
+					Go to the top of the file and look for the global variable <code>buildings</code>. It represents an object with a number of properties that represent the different buildings in the campus. Each property is an object that in turn has two properties, <code>name</code> and <code>LatLng</code>. These respectively represent the full name of the building and its location in latitude and longitude. Note that the abbreviation of the building serves as the property name (or id/key) for each property (building) of <code>buildings</code>. Now go to the function <code>mark()</code> and create a variable <code>selected_building</code> and store in it the object representing the selected building. You can access this from the <code>buildings</code> object associatively using the abbreviation stored in <code>value</code>.
+<pre>
+	var selected_building = buildings[value];
+</pre>		
+					We then need to center the map on the building, so we either directly center the map on the marker represented by the selected building <b>if it already exists</b>, or create the marker first and then snap to it. Also, the zoom level restriction must be in effect in either case. First, check if <code>value</code> is currently a property of <code>markers</code>. If <b>yes</b>, then call <code>updateMarkers(markers, positions, center?)</code> and pass in the single building marker, <code>undefined</code> and <code>null</code> respectively. One might wonder why we would call this function and pass it these odd arguments as opposed to directly setting the center of the map object. The main reasoning behind our choice is that the function for updating markers also draws the marker overlay on the map in case it was cleared. Additionally, the zoom restriction and centering operations are performed by the function as well. Thus, we can abstract away these operations to the function which results in a more elegant solution. Now if the building marker <b>does not exist</b>, then we create it by calling <code>createMarker(id, position, title, icon?)</code> and passing to it the building abbreviation, location, full name and the file path (string) to a suitable image file. The location (<code>position</code>) and full name arguments (<code>title</code>) can be accessed from the <code>selected_building</code> object. The image file in our case is an internal resource present in the <code>img</code> folder. A reference to its file path has already been provided in the global variable <code>red_university</code> Lastly, don't forget to call <code>checkMapZoom(current_zoom)</code>. The code thus far should like something like this:
+<pre>	
+	// Snap to/Center on the marker
+	if (markers.hasOwnProperty(value)) // If the marker already exists						
+		updateMarkers([markers[value]], [undefined], null);				
+	else // Create it if it doesn't exist
+	{		
+		createMarker(value, selected_building.LatLng, selected_building.name, path_images + "university.png");	
+		checkMapZoom(map.getZoom());			
+	}	
+</pre>					
+					Finally, save the marked building location persistently in local web storage. Do this by calling <code>saveToLocalStorage(location)</code> and passing to it the <code>LatLng</code> value of <code>selected_building</code>. We are now able to display a user-selected building on the map as well as save it in order to plot a path from another location to it whenever desired.
 				</p>				
 				
 				<h4>Load Last Saved Location</h4>

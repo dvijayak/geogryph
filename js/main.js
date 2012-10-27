@@ -21,8 +21,6 @@ var watcher_id; // Watcher object to track the user's current position
 // An object containing all buildings and their respective lat/lon values
 var buildings =
 {	
-
-
 	"AC": 
 	{		
 		name: "Athletics Centre",
@@ -230,6 +228,7 @@ var path_stylesheets = "css/";
 var path_scripts = "js/";
 var path_icon_me = path_images + "me.png";
 var blue_marker = path_images + "blue_marker.png"; 
+var red_university = path_images + "university.png";
 
 // External resources (if any)
 
@@ -409,12 +408,11 @@ function mark ()
 		var selected_building = buildings[value];						
 	
 		// Snap map to center on the marker
-		if (markers.hasOwnProperty(value))						
-			updateMarkers([markers[value]], [undefined], null);		
-		// Create it if it doesn't exist
-		else 
+		if (markers.hasOwnProperty(value))	// If the marker already exists					
+			updateMarkers([markers[value]], [undefined], null);				
+		else  // Create it if it doesn't exist
 		{		
-			createMarker(value, selected_building.LatLng, selected_building.name, path_images + "university.png");	
+			createMarker(value, selected_building.LatLng, selected_building.name, red_university);	
 			checkMapZoom(map.getZoom());			
 		}
 
@@ -471,7 +469,7 @@ function plot (destination)
 				var origin = new google.maps.LatLng(position.coords.latitude, position.coords.longitude); // User's current location						
 																
 				render(origin, destination);								
-				updateMarkers([markers.user, markers.destination], [origin, destination]);				
+				updateMarkers([markers.user, markers.destination], [origin, destination], destination);				
 			},
 			function ()
 			{
@@ -499,8 +497,7 @@ function render (origin, destination)
 			{					
 				// Render the directions path(s)
 				directions_display.setMap(map);
-				directions_display.setDirections(result);
-				map.setCenter(destination);
+				directions_display.setDirections(result);				
 			}
 		}
 	);		 	
@@ -638,9 +635,10 @@ function createMarker (id, position, title, icon)
 function updateMarkers (markers, positions, center)
 {	
 	for (var i = 0; i < markers.length; i++)
-	{								
-					
-		markers[i].setPosition(positions[i]);				
+	{						
+		if (positions[i] !== undefined)
+			markers[i].setPosition(positions[i]);				
+			
 		markers[i].setMap(map);
 			
 		// Optional: Center the map on a marker position
@@ -655,7 +653,7 @@ function updateMarkers (markers, positions, center)
 			else if (positions[i] == center)
 			{
 				checkMapZoom(map.getZoom());
-				map.setCenter(positions[i]);
+				map.setCenter(center);
 			}				
 		}									
 	}	
