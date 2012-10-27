@@ -15,8 +15,7 @@
 		<!-- Includes: scripts -->		
 		
 		<!-- Styles -->
-		<style>
-			* { color: #313131; }
+		<style>			
 			head { margin: 0; padding: 0; width: 100%; height: 100%; }
 			body { margin: 0; padding: 0; width: 100%; height: 100%; background-color: #313131;}
 												
@@ -37,14 +36,15 @@
 			h1, h2
 			{
 				font-family: Carrois Gothic;
-				font-weight: bold;								
+				font-weight: bold;
+				color: #313131;
 			}						
 			
 			p
 			{
 				text-align: justify;
-			}
-			
+				color: #313131;
+			}			
 		</style>		
 		
 	</head>
@@ -62,14 +62,45 @@
 		
 			<div id="introduction">								
 				<h3>Introduction</h3>
+				<p>
+					The objective of this tutorial is to further expose you to mobile application development using BlackBerry 10 HTML5 WebWorks by working on a larger scale application. The featured application in this hands-on tutorial bears witness to the fact that interesting features can be developed by harnessing contemporary web technologies. Among the wide range of services that they offers, the folks at Google are very well-known for providing their Maps and Places services, which work in tandem to allow users to locate and interact with points of interest on a dynamic interactive map. We will be leveraging these services along with services offered by the HTML5 specification to create an interactive campus map experience for staff and students at the University of Guelph in order to solve some of the navigational problems that this academic community frequently faces due to the distributed nature of the campus.
+					<br/><br/>
+					In a previous tutorial, you developed a location-aware application that helps users locate previously visited points of interest by saving their locations persistently and then reusing them at a later time to draw a path to them. Let us see how we can significanly improve on this feature and add an array of more interesting functions that together form a complete application that could perhaps make signs and static maps obsolete.
+				</p>
 			</div>
 			
 			<div id="skill">
 				<h3>Required Knowledge & Skills</h3>
+				<p>
+					<ol>
+						<li>Basic exposure to HTML, CSS and JavaScript</li>						
+						<li>
+							Important programming concepts in JavaScript
+							<ul>
+								<li><a href="http://en.wikipedia.org/wiki/Anonymous_function#JavaScript">Anonymous/Lambda functions</a></li>
+								<li><a href="http://www.slideshare.net/clutchski/writing-asynchronous-javascript-101">Asnchronous programming paradigm</a></li>
+							</ul>
+						</li>
+						<li>Successful completion of <a href="http://cmer.uoguelph.ca/labs/Lab1-BB10-WebWorks.pdf">Lab 1 of BB10 Apps with HTML5 WebWorks</a></li>						
+					</ol>
+				</p>
 			</div>
 			
 			<div id="tools">		
 				<h3>Required Tools & Configurations</h3>
+				<p>
+					Please first refer to <a href="http://cmer.uoguelph.ca/labs/Lab1-BB10-WebWorks.pdf">Lab 1 once again</a> and read from section "Setting up the HTML5 Webworks SDK, Ripple, and the BB10 Simulator" until the end of "Notes on BB10 WebWorks Applications" for instructions on setting up the required tools and configurations. As you read it, please look at the following important notes:
+					<ul>
+						<li><a href="https://developer.blackberry.com/html5/download/">Here</a> is a better link for the Ripple emulator, WebWorks SDK and BB10 Dev Alpha simulator
+							<ul>
+								<li>Note on VMWare Player: Version 5.x is currently buggy with the BB10 simulator. Download <a href="http://www.vmware.com/support/player40/doc/releasenotes_player404.html">version 4.x</a> or earlier instead</li>								
+							</ul>						
+						</li>
+						<li>
+							The latest WebWorks SDK (1.0.2 beta at the time of writing) no longer provides the simulator as part of the package. You will have to download it separately from the link above
+						</li>
+					</ul>
+				</p>
 			</div>
 			
 			<div id="features">
@@ -78,7 +109,7 @@
 					The following are the main features of this application:
 					<ul>
 						<li>Display the current location of the user on an interactive map</li>
-						<li>Trip recorder (see the Geolocation application from Lab #1)</li>
+						<li>Trip recorder (à la Lab 1)</li>
 						<li>Find a particular building at the university campus</li>
 						<li>Find any point of interest (POI) within the campus area</li>
 						<li>Display a path for walking from the user's current location to any other location identified by the above</li>
@@ -88,9 +119,11 @@
 			
 			<div id="interface">
 				<h3>User Interface</h3>
+				<p>
+					This tutorial focuses on showcasing the backend JavaScript functionality. As such, the entire user interface will be made ready for you with some related dynamic code being minimally covered. No external UI libraries are used, thus you should easily be able to apply existing HTML/CSS knowledge to understand the markup and stylesheet for this application.
+				</p>
 				
-				<!-- TODO -->
-				
+				<h3>Dynamic UI Functions</h3>				
 				<h4>Show/Hide More Options</h4>
 				<p>
 					We complete the user interface by implementing the toggle show/hide feature of the options overlay. We will need to add some JavaScript code for this. Go ahead and open up the <code>skeleton.js</code> file (about time!) in the <code>js</code> folder in your favorite text editor. Locate the <code>toggleOptions</code> function and observe it. The <code>options</code> variable stores the <code>DIV</code> element tagged by the id <code>options_overlay</code>. This is our overlay element. The <code>visibility</code> variable stores the current value of the <code>display</code> attribute of the overlay element. This attribute determines whether the element is hidden or not. Its possible values are the strings <code>"none"</code> (hidden), <code>"inline"</code> (visible) or <code>"block"</code> (visible). The overlay is obviously a block element since it will not be rendered in	line with text, so we implement a toggle mechanism that sets the <code>display</code> attribute of <code>options</code> to <code>"none"</code> when it is <code>"block"</code> and currently <code>"block"</code> when it is currently <code>"none"</code>. This can be accomplished using a simple if-else conditional structure. Recall that we had earlier bound click listeners to the map container (<code>map_canvas</code>). From now on, the options button acts as a toggle switch to show or hide the options overlay. Additionally, clicking anywhere else on the interface except for the toolbar will hide the overlay. This effectively emulates a toggle show/hide mechanism.
@@ -115,7 +148,7 @@
 				
 				<h4>Create Marker</h4>
 				<p>
-					Due to the nature of the application, we will have an indefinite and sometimes large number of markers on the map. In order to efficiently work with them, we store all markers in a global JavaScript object <code>markers</code>. Thus, we abstract the marker creation process into a separate function that appends newly created markers to this object. We will take advantage of the fact that JavaScript objects can function like associative arrays, so each marker is added as a property of the <code>markers</code> object<sup>*Objects as associative arrays</sup>.
+					Due to the nature of the application, we will have an indefinite and sometimes large number of markers on the map. In order to efficiently work with them, we store all markers in a global JavaScript object <code>markers</code>. Thus, we abstract the marker creation process into a separate function that appends newly created markers to this object. We will take advantage of the fact that JavaScript objects can function like associative arrays, so each marker is added as a property of the <code>markers</code> object<sup>1</sup>.
 					<br/><br/>
 					Go to the <code>createMarker(id, position, title, icon?)</code> function. The first and most important step is to create the marker object. Assign to <code>marker_options</code> the following properties: the <code>map</code> it belongs to; its <code>position</code> (a <code>google.maps.LatLng</code> object); and a <code>title</code> that briefly describes the marker. The <code>map</code> global variable is obviously the map; the <code>position</code> and <code>title</code> arguments of the function satisfy the next two properties. Now the icon uri that contains the image of the marker is an optional argument to the function, so we need to handle this. This can be done as follows:
 <pre>
@@ -157,10 +190,10 @@
 				
 				<h4>Update Markers</h4>
 				<p>
-					Just as we developed a general method to batch create markers, we also need to be able to update the position(s) of a marker or an array of markers. Examine the <code>updateMarkers(markers, positions, center?)</code> function. The first two arguments are arrays of marker objects and positions (the latter being of type <code>google.maps.LatLng</code>. These two arrays must work in tandem, that is their orders must be reflective of each other. In other words, the marker at index 0 will be updated with the position at index 0, the marker at index 1 will be updated with the position at index 1, and so on and so forth<sup>*A BETTER WAY OF DOING THIS</sup>. So iterate through the array of markers (the <code>for</code> loop has already been provided) and update each position with the equivalent position from the array of position. We also need to handle the case where the marker overlay is not present on the map due to clearing the map. Set the map property of each marker as the global <code>map</code> object. Additionally, the value of a position can be <code>undefined</code>. This can happen when the position of the marker does not need to change but the marker simply needs to be redrawn on the map due to being cleared prior to this. So check if the corresponding <code>position</code> is <code>undefined</code>: if <b>not</b>, then only do we update the position of the marker. The code for the steps so far is as follows:
+					Just as we developed a general method to batch create markers, we also need to be able to update the position(s) of a marker or an array of markers. Examine the <code>updateMarkers(markers, positions, center?)</code> function. The first two arguments are arrays of marker objects and positions (the latter being of type <code>google.maps.LatLng</code>. These two arrays must work in tandem, that is their orders must be reflective of each other. In other words, the marker at index 0 will be updated with the position at index 0, the marker at index 1 will be updated with the position at index 1, and so on and so forth<sup>2</sup>. So iterate through the array of markers (the <code>for</code> loop has already been provided) and update each position with the equivalent position from the array of position. We also need to handle the case where the marker overlay is not present on the map due to clearing the map. Set the map property of each marker as the global <code>map</code> object. Additionally, the value of a position can be <code>undefined</code>. This can happen when the position of the marker does not need to change but the marker simply needs to be redrawn on the map due to being cleared prior to this. So check if the corresponding <code>position</code> is <code>undefined</code>: if <b>not</b>, then only do we update the position of the marker. The code for the steps so far is as follows:
 <pre>
 	if (positions[i] !== undefined)
-			markers[i].setPosition(positions[i]);				
+		markers[i].setPosition(positions[i]);				
 			
 	markers[i].setMap(map);
 </pre>				
@@ -319,7 +352,7 @@
 				
 				<h4>Save Location For Later Use</h4>
 				<p>
-					One of the main features of the application is to store any desired location for reuse at a later time. This means that we need data that persists even after the app has been closed. The local web storage API defined as part of the HTML5 standard is a fine (and elegant) solution to this problem. Go to the <code>saveToLocalStorage(location)</code> function. It takes the <code>location</code> object, which is expected to be of type <code>google.maps.LatLng</code>, as an argument and stores it in the local web storage of the user's device.  First, create a JavaScript object<sup>*(JS object vs. JSON object)</sup> <code>data</code>. This object must have two properties, <code>lat</code> and <code>lng</code>, for storing the latitude and longitude of the <code>location</code> object separately. A <code>google.maps.LatLng</code> object has two methods, <code>lat()</code> and <code>lng()</code>. But these return <code>number</code> values, and not strings. Thus, we need to store in <code>data</code> the string representations of the values returned by the methods. Next, we need to convert <code>data</code> into a JSON object (string) because only strings can be stored in the local storage and we need a meaningful way to represent the <code>data</code> object. Store the resultant string in a variable <code>storage_string</code>. Now, consider the <code>localStorage</code> object that is provided as part of the API. It is a persistent object and its values do not change or reset even when the application is closed and re-opened. We obviously want to add our data somehow to this object so that it can be persistent as well. This can be done by creating a new property <code>savedLocation</code> and then storing the string representation of our data into this property. Your code should now look something like this:
+					One of the main features of the application is to store any desired location for reuse at a later time. This means that we need data that persists even after the app has been closed. The local web storage API defined as part of the HTML5 standard is a fine (and elegant) solution to this problem. Go to the <code>saveToLocalStorage(location)</code> function. It takes the <code>location</code> object, which is expected to be of type <code>google.maps.LatLng</code>, as an argument and stores it in the local web storage of the user's device.  First, create a JavaScript object<sup>3</sup> <code>data</code>. This object must have two properties, <code>lat</code> and <code>lng</code>, for storing the latitude and longitude of the <code>location</code> object separately. A <code>google.maps.LatLng</code> object has two methods, <code>lat()</code> and <code>lng()</code>. But these return <code>number</code> values, and not strings. Thus, we need to store in <code>data</code> the string representations of the values returned by the methods. Next, we need to convert <code>data</code> into a JSON object (string) because only strings can be stored in the local storage and we need a meaningful way to represent the <code>data</code> object. Store the resultant string in a variable <code>storage_string</code>. Now, consider the <code>localStorage</code> object that is provided as part of the API. It is a persistent object and its values do not change or reset even when the application is closed and re-opened. We obviously want to add our data somehow to this object so that it can be persistent as well. This can be done by creating a new property <code>savedLocation</code> and then storing the string representation of our data into this property. Your code should now look something like this:
 <pre>
 	// Store the latitude and longitude in a convenient object
 	var data = 
@@ -484,7 +517,7 @@
 						<li>
 							<h4>Clear the search box</h4>
 							<p>
-								Get the search field element from the markup and store it in a variable <code>search_box</code>. Assign the <code>value</code> attribute<sup>*(attribute vs. property)</sup> as <code>""</code>. This effectively clears the text entry field.
+								Get the search field element from the markup and store it in a variable <code>search_box</code>. Assign the <code>value</code> attribute<sup>4</sup> as <code>""</code>. This effectively clears the text entry field.
 							</p>
 						</li>
 						<li>
@@ -520,7 +553,69 @@
 			</div>
 			
 			<div id="appendix_a">
-				<h3>Appendix A: Solutions to mini-challenges</h3>
+				<h3>Appendix A: Further Learning</h3>
+				<ol>
+					<li>
+						<h4>Associative Arrays in JavaScript</h4>
+						<p>
+							There is an interesting connection between JavaScript objects and associative arrays. Read these articles to obtain a better understanding: <a href="http://www.quirksmode.org/js/associative.html">1</a>, <a href="http://blog.xkoder.com/2008/07/10/javascript-associative-arrays-demystified">2</a>
+						</p>
+					</li>
+					<li>
+						<h4>A More Elegant Approach</h4>
+						<p>
+							Instead of having the <code>markers</code> and <code>positions</code> arrays as two separate objects, create one JavaScript array object to pass as a single argument that encompasses both the markers and their positions.
+<pre>
+		// Here is the modified function
+		function updateMarkers (points_of_interest, center)
+		{
+			for (var poi in points_of_interest)
+			{
+				if (poi.position !== undefined)
+					poi.marker.setPosition(poi.position);
+					
+				poi.marker.setMap(map);
+				
+				// Continue the rest of the function accordingly...
+			}
+			
+		}		
+		// Assume we are plotting a path between the user's current location and a destination point
+		// We are in the plot() function and are calling the updateMarkers() function						
+		// We would thus create the following array of objects...
+		var points_of_interest = 
+		[
+			{
+				marker: markers.user,
+				position: new_user_location
+			}, 
+			{
+				marker: markers.destination,
+				position: new_destination_location
+			}, 
+			{
+				// etc. etc. for as many markers as needed
+			}
+		];
+		
+		// ...and then pass it into updateMarkers as follows
+		updateMarkers(points_of_interest, position);
+</pre>							
+						</p>
+					</li>
+					<li>
+						<h4>JavaScript Object vs. JSON Object</h4>
+						<p>
+							They are not the same. Read the answer to this <a href="http://stackoverflow.com/questions/8294088/javascript-object-vs-json">question</a> on Stack Overflow.
+						</p>
+					</li>
+					<li>
+						<h4>Attribute vs. Property</h4>
+						<p>
+							There is a slight distinction between a (pre-defined/inherited) attribute and a (custom defined) property of an object. Here is <a href="http://stackoverflow.com/questions/5874652/prop-vs-attr?lq=1">another</a> Stack Overflow reference.
+						</p>
+					</li>
+				</ol>
 			</div>
 	
 		</div>
