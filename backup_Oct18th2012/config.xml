@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widget xmlns="http://www.w3.org/ns/widgets" xmlns:rim="http://www.blackberry.com/ns/widgets" version="2.0.0.0" id="geogryph" xml:lang="en">
+
+	<author href="http://cmer.uoguelph.ca/" rim:copyright="Copyright 1998-2012 University of Guelph" email="dvijayak@uoguelph.ca">Daniel V.</author>
+	<name>GeoGrpyh</name>
+	<description>An geolocation app for students of the University of Guelph</description>
+	
+	<content src="index.html" rim:allowInvokeParams="true"/>
+	
+	<!-- Permissions -->
+	<rim:permission>
+		<rim:permit>read_geolocation</rim:permit>
+	</rim:permission>
+	
+	<!-- Special BB properties -->
+	<rim:orientation mode="portrait"/>
+	<rim:loadingScreen backgroundColor="#AAA000" onLocalPageLoad="true">
+		<rim:transitionEffect type="zoomIn"/>
+	</rim:loadingScreen>
+	<rim:splash src="img/cmer.png"/>
+	
+	<!-- Features -->
+	<feature id="blackberry.identity" required="true" version="1.0.0.0"/>
+	<feature id="blackberry.ui.dialog"/>
+	
+	<!-- External resources -->
+	<access uri="*" subdomains="true"></access>
+
+	<license href="http://cmer.uoguelph.ca/"/>
+</widget>

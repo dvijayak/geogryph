@@ -1,0 +1,105 @@
+<!DOCTYPE HTML>
+<html>
+
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+		<meta name="viewport" id="viewport" content="width=device-width, user-scalable=no" />
+		<title>GeoGryph</title>
+		
+		<!-- Includes: stylesheets -->
+		<link type="text/css" href="css/style.css" rel="stylesheet"/> 		
+			<!-- Google Web Fonts Beta: Carrois Gothic (Latin) -->
+			<link type="text/css" href="http://fonts.googleapis.com/css?family=Carrois+Gothic" rel="stylesheet"/>		
+		
+		<!-- Includes: scripts -->
+		<!-- Note: Always include external libraries (like google) first before including personal libraries to avoid undefined reference errors -->		
+		<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyBdWg8QySMVfQ3GROvIhTqO-l4P4tHSi8U&libraries=places&sensor=true"></script>		
+		<script type="text/javascript" src="js/webworks-1.0.1.17.js"></script>
+		<script type="text/javascript" src="js/main.js"></script>		
+		
+		
+		<!-- onload scripts -->
+		<script>					
+									
+			function ready() 
+			{			
+				// MUST subscribe to the webworksready event before calling any WebWorks APIs
+				var ele = document.createElement("div");
+				ele.innerHTML = "uuid: " + blackberry.identity.uuid;
+				document.documentElement.appendChild(ele);			
+			}		
+			window.addEventListener("load", function(e) {
+				document.addEventListener("webworksready", ready);
+			}, false);						
+			
+		</script>		
+		
+	</head>
+
+	<body onload="initializeMap()">										
+	
+		<div id="main_container">							
+		
+			<div id="toolbar">
+													
+				<select class="geo_theme left" id="buildings" onchange="mark();">
+					<option value="null" selected="selected">&lt;Buildings&gt;</option>
+					<option value="AC">AC (Athletics Centre)</option>
+					<option value="ANNU">ANNU (Animal Science & Nutrition)</option>
+					<option value="ALEX">ALEX (Alexander Hall)</option>
+					<option value="AXEL">AXEL (Axelrod)</option>
+					<option value="BIO">BIO (Biodiversity Institute of Ontario)</option>
+					<option value="BWH">BWH (Blackwood Hall)</option>
+					<option value="CAF">CAF (Central Animal Facility)</option>
+					<option value="CRSC">CRSC (Crop Science)</option>
+					<option value="DH">DH (Day Hall)</option>
+					<option value="EBA">EBA (Environmental Biology Annex 1)</option>
+					<option value="ECB">ECB (Edmund C. Bovey)</option>
+					<option value="FS">FS (Food Science)</option>					
+					<option value="GRHM">GRHM (Graham Hall)</option>
+					<option value="HUTT">HUTT (H. L. Hutt)</option>
+					<option value="JHNH">JHNH (Johnston Hall)</option>
+					<option value="JTP">JTP (John T. Powell)</option>
+					<option value="LA">LA (Landscape Architecture)</option>					
+					<option value="MAC">MAC (Macdonald Hall)</option>
+					<option value="MACK">MACK (MacKinnon)</option>
+					<option value="MACN">MACN (MacNaughton)</option>
+					<option value="MACS">MACS (Macdonald Steward Hall)</option>
+					<option value="MASS">MASS (Massey Hall)</option>
+					<option value="MCLN">MCLN (MacLachlan)</option>
+					<option value="MINS">MINS (Macdonald Institute)</option>
+					<option value="MLIB">MLIB (McLaughlin Library)</option>
+					<option value="MSAC">MSAC (Macdonald Stewart Art Centre)</option>
+					<option value="OVC">OVC (Ontario Veterinary College)</option>
+					<option value="PAHL">PAHL (OVC Pathobiology AHL)</option>
+					<option value="REYN">REYN (Reynolds)</option>
+					<option value="RICH">RICH (Richards)</option>
+					<option value="ROZH">ROZH (Rozanski Hall)</option>
+					<option value="SCIE">SCIE (Science Complex)</option>
+					<option value="TCI">TCI (TransCanada Institute)</option>
+					<option value="THRN">THRN (Thornbrough)</option>
+					<option value="VSER">VSER (Vehicle Services)</option>
+					<option value="WMEM">WMEM (War Memorial Hall)</option>
+					<option value="ZAV">ZAV (Zavitz Hall)</option>
+					<option value="ZOOA">ZOOA (Zoology Annex 1)</option>
+					<option value="ZOOB">ZOOB (Zoology Annex 2)</option>
+				</select>													
+				<a class="left" id="plot" href="javascript:plot();"></a>									
+				<a class="left" id="save" href="javascript:save();"></a>	
+				<a class="left" id="me" href="javascript:snap();"></a>
+				<a class="left" id="clear" href="javascript:clear();"></a>				
+				<a class="left" id="check" href="javascript:checkLocalStorage();"></a>					
+				<a class="left" id="empty" href="javascript:clearStorage();">EmptyLocal</a>
+				<a id="go" class="right" href="javascript:search();"></a>
+				<input class="geo_theme right" id="search" type="text" name="search" size=10></input>
+				
+			</div>
+			
+			<div id="map_canvas">							
+			</div>
+		</div>	
+			
+	</body>
+	
+	
+</html>

@@ -1,0 +1,11 @@
+<NotepadPlus>
+    <Session activeView="0">
+        <mainView activeIndex="3">
+            <File firstVisibleLine="0" xOffset="0" scrollWidth="1256" startPos="40" endPos="40" selMode="0" lang="XML" encoding="-1" filename="C:\Development\Apache2_2\htdocs\GeoGryph\GeoGryph_bb10\config.xml" />
+            <File firstVisibleLine="56" xOffset="0" scrollWidth="1376" startPos="2474" endPos="2474" selMode="0" lang="HTML" encoding="-1" filename="C:\Development\Apache2_2\htdocs\GeoGryph\GeoGryph_bb10\index.html" />
+            <File firstVisibleLine="251" xOffset="0" scrollWidth="2256" startPos="6186" endPos="6186" selMode="0" lang="Javascript" encoding="-1" filename="C:\Development\Apache2_2\htdocs\GeoGryph\GeoGryph_bb10\js\main.js" />
+            <File firstVisibleLine="43" xOffset="0" scrollWidth="712" startPos="2021" endPos="2021" selMode="0" lang="CSS" encoding="-1" filename="C:\Development\Apache2_2\htdocs\GeoGryph\GeoGryph_bb10\css\style.css" />
+        </mainView>
+        <subView activeIndex="0" />
+    </Session>
+</NotepadPlus>
