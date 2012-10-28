@@ -1,7 +1,9 @@
+/* BEGIN GLOBAL VARIABLE DECLARATIONS */
+
 // Main Google Maps objects
-var api_key = "AIzaSyBdWg8QySMVfQ3GROvIhTqO-l4P4tHSi8U";
+var api_key = "ENTER YOUR OWN API KEY HERE";
 var map;
-var desired_zoom = 18;
+var desired_zoom = 18; // Tweak both parameters as desired
 var min_zoom = 14;
 var campus_area; // Circle representing the campus area (as of October 2012)
 
@@ -15,8 +17,6 @@ var directions_display; // Responsible for rendering the directions on to the ma
 
 // Array of all marker objects
 var markers = {};
-
-var watcher_id; // Watcher object to track the user's current position
 
 // An object containing all buildings and their respective lat/lon values
 var buildings =
@@ -232,29 +232,18 @@ var path_icon_me = path_images + "me.png";
 var blue_marker = path_images + "blue_marker.png"; 
 var red_university = path_images + "university.png";
 
-// External resources (if any)
+/* END GLOBAL VARIABLE DECLARATIONS */
 
-// Create and initialize the main Google Maps object
+// Create and initialize the key Google Maps objects
 function initializeMap ()
 {	
 
 	// Parameters for directions rendering
-	var polyline_options =
+	var polyline_options;
+	var renderer_options  = 
 		{
-			strokeColor: "#0000CD",
-			strokeOpacity: 0.6,
-			strokeWeight: 7
-		};
-	var renderer_options = 
-		{
-			draggable: false,
-			preserveViewport: true,			
-			polylineOptions: polyline_options,
-			suppressMarkers: true
+			polylineOptions: polyline_options
 		};	
-	
-	directions_service/* = new google.maps.DirectionsService()*/;
-	directions_display = new google.maps.DirectionsRenderer(renderer_options);
 			
 	// Parameters for the initialization of the map
 	var mapOptions = 
@@ -273,31 +262,12 @@ function initializeMap ()
 	
 	// Create the map object
 	map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);				
-	
-	// Attempt to center the map upon loading on the user's current position	
-	getUserLocation(
-		function (position)
-		{
-			var location = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-			updateMarkers([markers.user], [location], location);			
-		},
-		function ()
-		{
-			map.setCenter(stone_gordon);
-		}
-	);	
 
 	// Markers
 	markers.user = new google.maps.Marker(
 		{
-			title: "You are HERE",				
-			// icon: path_icon_me
-			icon: new google.maps.MarkerImage(
-				path_icon_me, new google.maps.Size(64, 64), // Assumes that the original image is 64 x 64
-				new google.maps.Point(0, 0), // origin point of the image (usually 0,0)
-				new google.maps.Point(32, 64), // anchor point, i.e. where it points to the location (usually in the bottom middle, so at (floor(max_x/2),max_y))
-				new google.maps.Size(64, 64) // final dimensions of scaled image
-			)
+			title: "You are HERE",							
+			icon: path_icon_me			
 		}
 	);	
 	markers.destination = new google.maps.Marker(
@@ -307,67 +277,15 @@ function initializeMap ()
 		}
 	);
 		
-	// Clicking on a marker generally centers the map on it
-	for (marker in markers)
-	{
-		// IIFE (Immediately Invoked Function Expression) for dealing with the asynchronous nature of callback functions
-		!function (marker_local) // outer
-		{
-			google.maps.event.addListener(markers[marker], 'click',			
-				function () // inner (local)
-				{				
-					checkMapZoom(map.getZoom());
-					map.setCenter(markers[marker_local].position);					
-				}			
-			);			
-		}(marker)
-	}	
-	
 	// Circle enclosing the known campus area
-	var circle_options = 
-		{
-			clickable: false,
-			strokeColor: "#FF0000",
-			strokeOpacity: 0.6,
-			strokeWeight: 2,
-			fillOpacity: 0.0,
-			map: map,
-			center: campus_center,
-			radius: search_radius
-		};
-	campus_area = new google.maps.Circle(circle_options);
+
 	
 	// Subscribe the map object to the Google Places service
-	places_service = new google.maps.places.PlacesService(map);
-
-	// Invoke the search function directly when the user presses Enter after typing the query in the input box
-	var search_box = document.getElementById("search");
-	search_box.addEventListener("keypress", 
-		function (e)
-		{
-			var key = e.keyCode ? e.keyCode : e.which;
-			
-			if (key == 13)
-				search();
-		}
-	, false);
-	
-	// Create the autocomplete object and attach it to the search box
-	var search_bounds = new google.maps.LatLngBounds(
-			new google.maps.LatLng(43.518774,-80.24148),
-			new google.maps.LatLng(43.547739,-80.203886)
-		);
-	var search_box = document.getElementById("search");		
-	var auto_options = 
-		{
-			bounds: search_bounds,
-			componentRestrictions: {country: "ca"}
-		}
-	var autocomplete = new google.maps.places.Autocomplete(search_box, auto_options);					
+	places_service = new google.maps.places.PlacesService(map);		
 }
 
 
-// [DONE] Select (mark) a building to save in local web storage (HTML 5)
+// Select (mark) a building to save in local web storage (HTML 5)
 function mark ()
 {
 	var select = document.getElementById("buildings");
@@ -375,32 +293,18 @@ function mark ()
 	
 	if (value != "null") // Does nothing if user selects the placeholder '<Buildings>' option
 	{
-		/* // Create an object representing the selected building	
-		var selected_building = buildings[value];						
-	
-		// Snap to/Center on the marker
-		if (markers.hasOwnProperty(value)) // If the marker already exists						
-			updateMarkers([markers[value]], [undefined], null);				
-		else // Create it if it doesn't exist
-		{		
-			createMarker(value, selected_building.LatLng, selected_building.name, red_university);	
-			checkMapZoom(map.getZoom());			
-		}
-
-		// Save the marked building location to local web storage (HTML 5)
-		saveToLocalStorage(selected_building.LatLng);	 */	
+		
 	}		
 	
 }
 
-// [DONE] Snap the focus on to the user's current location
+// Snap the focus on to the user's current location
 function snap () 
 {		
 	getUserLocation(
 		function (position)
 		{
-			/* var location = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);											
-			updateMarkers([markers.user], [location], location);		 */	
+		
 		},	
 		function ()
 		{
@@ -409,37 +313,21 @@ function snap ()
 	);		
 }
 
-// [DONE] Save the user's current location in local web storage (HTML5)
+// Save the user's current location in local web storage (HTML5)
 function save () 
 {
-	/* getUserLocation(
-		function (position)
-		{
-			var location = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);			
-			saveToLocalStorage(location);
-		},
-		function ()
-		{
-			map.setCenter(stone_gordon);
-		}
-	); */
+
 }
 
-// [DONE] Plot a path from the user's current location to the desired destination
+// Plot a path from the user's current location to the desired destination
 function plot (destination) 
 {	
-	/* // If a destination has not been provided, load from local web storage (HTML 5)
-	if (destination === undefined) 			
-		destination = loadFromLocalStorage(); */
 	if (destination !== undefined) // If a destination does exist (Note that loadFromLocalStorage() can return undefined
 	{
 		getUserLocation(
 			function (position)
 			{
-				/* var origin = new google.maps.LatLng(position.coords.latitude, position.coords.longitude); // User's current location						
-																
-				render(origin, destination);								
-				updateMarkers([markers.user, markers.destination], [origin, destination]);	 */			
+			
 			},
 			function ()
 			{
@@ -449,78 +337,21 @@ function plot (destination)
 	}	
 }
 
-// [DONE[ Search for points of interest and display them on the map
+// Search for points of interest and display them on the map
 function search ()
 {
 	var input = document.getElementById("search").value;
-		
-	/* var request = 
-		{
-			keyword: input,		
-			location: campus_center,
-			radius: search_radius.toString()		
-		};
-		
-	places_service.search(request, 
-		function (results, status, pagination)
-		{
-			if (status == google.maps.places.PlacesServiceStatus.OK)
-			{				
-				for (var i = 0; i < results.length; i++)
-				{					
-					var place = results[i];													
-					
-					// Temporary fix: The icons are scaled down to half since the icons provided from the API results are too big				
-					var shrink_icon = new google.maps.MarkerImage(
-						place.icon, 
-						new google.maps.Size(71, 71), // Assumes that the original image is 71x71
-						new google.maps.Point(0, 0),  // origin point of the image (usually 0,0)
-						new google.maps.Point(17, 34),  // anchor point, i.e. where it points to the location (usually in the bottom middle, so at (floor(max_x/2),max_y))
-						new google.maps.Size(34, 34)  // final dimensions of scaled image
-					);
-					
-					createMarker(place.id, place.geometry.location, place.name, shrink_icon);
-					// Save the last result into local storage
-					if (i == results.length - 1)
-						saveToLocalStorage(place.geometry.location);
-					
-				}				
-			}
-			else if (status == google.maps.places.PlacesServiceStatus.ZERO_RESULTS)			
-				alert("Search: No results were found for \"" + input + "\"");
-			else if (status == google.maps.places.PlacesServiceStatus.INVALID_REQUEST)
-				alert("Error: The request was invalid!");
-			else if (status == google.maps.places.PlacesServiceStatus.OVER_QUERY_LIMIT)
-				alert("Error: You have exceeded the search request quota. Try again in 48 hours!");
-			else if (status == google.maps.places.PlacesServiceStatus.REQUEST_DENIED)
-				alert("Error: Forbidden access. The request is not allowed to be processed!");
-			else if (status == google.maps.places.PlacesServiceStatus.UNKNOWN_ERROR)
-				alert("Error: The search request could not be processed due to a server error. Please try again later!");
-			else if (status == google.maps.places.PlacesServiceStatus.ERROR)
-				alert("Error: There was a problem contacting the Google servers!");		
-			
-			// The response contains max 20 locations per request; we must scroll through the remaining 'pages' of results
-			if (pagination.hasNextPage)
-			{
-				sleep:2; // Google imposes a 2-second delay between each search request
-				pagination.nextPage(); // nextPage() calls this callback function once again
-			}
-		}
-	); */
+
 }
 
 
-// [DONE] Restricts the possible zoom levels of the map
+// Restricts the possible zoom levels of the map
 function checkMapZoom (current_zoom)
 {	
-	/* if (current_zoom < desired_zoom)
-	{		
-		if (current_zoom < min_zoom)	
-			map.setZoom(min_zoom);				
-	} */
+
 }
 
-// [DONE] Takes an origin and a destination location, plots the directions between the two and then renders the path on the map
+// Takes an origin and a destination location, plots the directions between the two and then renders the path on the map
 function render (origin, destination)
 {
 	// Calculate the route using the directions API
@@ -534,96 +365,56 @@ function render (origin, destination)
 	directions_service.route(request, 
 		function (result, status)
 		{
-			/* if (status == google.maps.DirectionsStatus.OK)
-			{					
-				// Render the directions path(s)
-				directions_display.setMap(map);
-				directions_display.setDirections(result);
-				map.setCenter(destination);
-			} */
+
 		}
 	);		 	
 }
 
-// [DONE] Create a marker object representing a location and add it to the global array of markers
+// Create a marker object representing a location and add it to the global array of markers
 // Optional: add a custom icon to the marker object
 function createMarker (id, position, title, icon)
 {
-	/* if (!markers.hasOwnProperty(id))
-	{ */
-		var marker_options; /*= 
-		{
-			map: map,
-			position: position,
-			title: title			
-		};
-		if (icon !== undefined)
-			marker_options.icon = icon; */
+	var marker_options;
+
+	
+	var content = "<DIV style='text-align:center; padding:0 2px 0 2px; background-color:#313131; color:#EEEECE;'>" + 
+		"<H3><B>" + title + "</B></H3></DIV>";
+
+	// The info window of the marker
+	var info_window = new google.maps.InfoWindow({		
+		content: content
+	});		
 			
-		/* markers[id] = new google.maps.Marker(marker_options);	 */
+	google.maps.event.addListener(markers[id], 'click',				
+		function ()
+		{										
+			
+			info_window.open(map, markers[id]);
+		}			
+	);	
+	
+	google.maps.event.addListener(map, 'click',
+		function ()
+		{
+			info_window.close();
+		}
+	);
 
-		var content = "<DIV style='text-align:center; padding:0 2px 0 2px; background-color:#313131; color:#EEEECE;'>" + 
-			"<H3><B>" + title + "</B></H3></DIV>";
-
-		// The info window of the marker
-		var info_window = new google.maps.InfoWindow({		
-			content: content
-		});		
-				
-		google.maps.event.addListener(markers[id], 'click',				
-			function ()
-			{						
-				/*saveToLocalStorage(position);
-				checkMapZoom(map.getZoom())
-				map.setCenter(position);*/
-				
-				info_window.open(map, markers[id]);
-			}			
-		);	
-		
-		google.maps.event.addListener(map, 'click',
-			function ()
-			{
-				info_window.close();
-			}
-		);
-	/* }
-	else
-		markers[id].setMap(map); */
 }
 
-// [DONE] Update the position of the inputted markers on the map
+// Update the position of the inputted markers on the map
 // Optional: Center the map on one of the inputted markers
 function updateMarkers (markers, positions, center)
 {	
 	for (var i = 0; i < markers.length; i++)
 	{										
-		/* if (positions[i] !== undefined)
-			markers[i].setPosition(positions[i]);				
-			
-		markers[i].setMap(map);
-			
-		// Optional: Center the map on a marker position
-		if (center !== undefined)
-		{					
-			if (center == null)
-			{			
-				checkMapZoom(map.getZoom());
-				map.setCenter(markers[i].position);				
-			}
-			// Ensures that only one of the input markers can be focused on
-			else if (positions[i] == center)
-			{
-				checkMapZoom(map.getZoom());
-				map.setCenter(center);
-			}				
-		}	 */				
+		
 	}
 	
 }
 
 
-// [DONE] Compute the current position/location of the user
+// Compute the current position/location of the user
 function getUserLocation (callback, errorCallback)
 {
  	// Geolocation services must be enabled
@@ -632,8 +423,7 @@ function getUserLocation (callback, errorCallback)
 		navigator.geolocation.getCurrentPosition(			
  			function (position)
 			{					
-				/* // Do something with the current position
-				callback(position); */
+	
 			}
 			// Deal with errors
 			, function (error)
@@ -643,106 +433,44 @@ function getUserLocation (callback, errorCallback)
 					case error.PERMISSION_DENIED:
 						alert("Error: Denied access to location services!");
 						break;
-					/* case error.POSITION_UNAVAILABLE:
-						alert("Error: Location information is unavailable!");
-						break;
-					case error.TIMEOUT:
-						alert("Error: Request timed out!");
-						break;
-					case error.UNKNOWN_ERROR:
-						alert("Error: An unknown error has occurred!");
-						break; */
+
 				}
-				/* if (errorCallback !== undefined)
-					errorCallback(); */
+
 			}
 		, {enableHighAccuracy: true});
 	} 
-/* 	else
-	{
-		if (errorCallback === undefined)
-			alert("Error: Geolocation services are not supported by your device!");
-		else
-			errorCallback();
-	} */
 		
 }
 
-// [DONE] Saves the input location to local web storage (HTML 5)
+// Saves the input location to local web storage (HTML 5)
 function saveToLocalStorage (location)
 {		
-	/* // Checks if local web storage is supported by the device
-	if (window.localStorage)
-	{
-		// Store the latitude and longitude in a convenient object
-		var data = 
-		{
-			lat: (location.lat()).toString(),
-			lng: (location.lng()).toString()
-		};		
-		
-		// Convert to a JSON string so it can be saved in local session storage
-		var storage_string = JSON.stringify(data);	
-		localStorage.savedLocation = storage_string;		
-		
-		// Snap map to the saved location
-		map.setCenter(location);
-	}
-	else
-		alert("Error: localStorage is not supported by your device!"); */
+	
 }
 
-// [DONE] Loads the last saved location from local web storage (HTML 5) and returns it to the caller
+// Loads the last saved location from local web storage (HTML 5) and returns it to the caller
 function loadFromLocalStorage ()
 {
 	if (window.localStorage)
-	{
-		/* // Check if a location was saved previously
-		if (!localStorage.hasOwnProperty("savedLocation"))
-		{			
-			alert("Error: You have not saved a location yet!");
-			return undefined;
-		} */
+	{		
 
 		// Load the previously saved location into the application
-		var data; /*= JSON.parse(localStorage.savedLocation);
-		var loaded_location = new google.maps.LatLng(data.lat, data.lng);
+		var data;
 		
-		return loaded_location;*/
 	}
 	else
 		alert("Error: localStorage is not supported by your device!");
 }
 
 
-// [DONE] Clears all rendered overlays from the map
+// Clears all rendered overlays from the map
 function clear () 
 {
-	/* // Clear the search box
-	var search_box = document.getElementById("search");
-	search_box.value = "";
-	
-	// Clear all rendered markers
-	for (var marker in markers)				
-		markers[marker].setMap(null);						
-	
-	// Clear all rendered paths
-	directions_display.setMap(null);	
-	
-	// Clears the position tracker service
-	if (navigator.geolocation)
-		navigator.geolocation.clearWatch(watcher_id); */
+
 }
 
-// [DONE] Clears the local web storage (HTML5) of the browser/agent/device
+// Clears the local web storage (HTML5) of the browser/agent/device
 function clearStorage ()
 {	
-/* 	if (window.localStorage)
-	{
-		delete localStorage.savedLocation;	
-			
-		alert("Notice: All saved locations have been cleared!");
-	}
-	else
-		alert("Error: localStorage is not supported in your device!"); */
+
 }

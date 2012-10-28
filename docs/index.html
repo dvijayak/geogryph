@@ -45,6 +45,11 @@
 				text-align: justify;
 				color: #313131;
 			}			
+			
+			pre
+			{
+				overflow: auto;
+			}
 		</style>		
 		
 	</head>
@@ -61,16 +66,16 @@
 			</div>
 		
 			<div id="introduction">								
-				<h3>Introduction</h3>
+				<h2>Introduction</h2>
 				<p>
-					The objective of this tutorial is to further expose you to mobile application development using BlackBerry 10 HTML5 WebWorks by working on a larger scale application. The featured application in this hands-on tutorial bears witness to the fact that interesting features can be developed by harnessing contemporary web technologies. Among the wide range of services that they offers, the folks at Google are very well-known for providing their Maps and Places services, which work in tandem to allow users to locate and interact with points of interest on a dynamic interactive map. We will be leveraging these services along with services offered by the HTML5 specification to create an interactive campus map experience for staff and students at the University of Guelph in order to solve some of the navigational problems that this academic community frequently faces due to the distributed nature of the campus.
+					The objective of this tutorial is to further expose you to mobile application development using BlackBerry 10 HTML5 WebWorks by working on a feature-rich application. The featured application in this hands-on tutorial bears witness to the fact that interesting features can be developed by harnessing contemporary web technologies. Among the wide range of services that they offers, the folks at Google are very well-known for providing their Maps and Places services, which work in tandem to allow users to locate and interact with points of interest on a dynamic interactive map. We will be leveraging these services along with services offered by the HTML5 specification to create an interactive campus map experience for staff and students at the University of Guelph in order to solve some of the navigational problems that this academic community frequently faces due to the distributed nature of the campus.
 					<br/><br/>
 					In a previous tutorial, you developed a location-aware application that helps users locate previously visited points of interest by saving their locations persistently and then reusing them at a later time to draw a path to them. Let us see how we can significanly improve on this feature and add an array of more interesting functions that together form a complete application that could perhaps make signs and static maps obsolete.
 				</p>
 			</div>
 			
 			<div id="skill">
-				<h3>Required Knowledge & Skills</h3>
+				<h2>Required Knowledge & Skills</h2>
 				<p>
 					<ol>
 						<li>Basic exposure to HTML, CSS and JavaScript</li>						
@@ -89,7 +94,7 @@
 			</div>
 			
 			<div id="tools">		
-				<h3>Required Tools & Configurations</h3>
+				<h2>Required Tools & Configurations</h2>
 				<p>
 					Please first refer to <a href="http://cmer.uoguelph.ca/labs/Lab1-BB10-WebWorks.pdf">Lab 1 once again</a> and read from section "Setting up the HTML5 Webworks SDK, Ripple, and the BB10 Simulator" until the end of "Notes on BB10 WebWorks Applications" for instructions on setting up the required tools and configurations. As you read it, please look at the following important notes:
 					<ul>
@@ -101,12 +106,15 @@
 						<li>
 							The latest WebWorks SDK (1.0.2 beta at the time of writing) no longer provides the simulator as part of the package. You will have to download it separately from the link above
 						</li>
+						<li>
+							<a href="https://developers.google.com/maps/documentation/javascript/tutorial#api_key">A Google Maps Access API Key</a>
+						</li>
 					</ul>
 				</p>
 			</div>
 			
 			<div id="features">
-				<h3>Features</h3>
+				<h2>Features</h2>
 				<p>
 					The following are the main features of this application:
 					<ul>
@@ -120,19 +128,37 @@
 			</div>
 		
 			<div id="testing">
-				<h3>Testing & Debugging</h3>
+				<h2>Testing & Debugging</h2>
 				<p>
-					It is encouraged that you frequently test your application using the tools and methods mentioned in Lab 1. The simulator virtual machine is your most accurate measure of the correctness of your application at your disposal, however it requires a fairly high-powered computer to be able to smoothly run it. Therefore, do most testing within the Ripple emulator and perform regular testing of major changes to your application on the simulator.
+					It is encouraged that you frequently test your application using the tools and methods mentioned in Lab 1. The simulator virtual machine is your most accurate measure of the correctness of your application at your disposal, however it requires a fairly fast machine with enhanced threaded optimization to be able to smoothly run it. Therefore, do most testing within the Ripple emulator and perform regular testing of major changes to your application on the simulator.
 				</p>
 			</div>
 		
 			<div id="interface">
-				<h3>User Interface</h3>
+				<h2>User Interface</h2>
 				<p>
 					This tutorial focuses on showcasing the backend JavaScript functionality. As such, the entire user interface has been made ready for you with some related dynamic code being minimally covered. No external UI libraries are used, thus you should easily be able to apply existing HTML/CSS knowledge to understand the markup and stylesheet for this application.
 				</p>
 				
-				<h3>Dynamic UI Functions</h3>				
+				<h3>Dynamic UI Functions</h3>	
+				<h4>Enable Search Using Keyboard</h4>
+				<p>
+					The very first feature we would like is to be able to submit a search query by pressing Enter as opposed to clicking on the GO button in the interface. This is a very trivial task: Set the variable <code>search_box</code> to store a reference to the search text entry field element and bind to it a <code>keypress</code> event listener. As for the callback function that processes the event, create an anonymous function that takes in the argument <code>e</code>, which represents the event object. Within this function, create a variable <code>key</code> and store in it the key code of the pressed key. Then check if this value is <code>13</code> (the code representing the Enter key) and if <b>yes</b>, then call the <code>search()</code> function. The code for everything should look something like this:
+<pre>
+	// Invoke the search function directly when the user presses Enter after typing the query in the input box
+	var search_box = document.getElementById("search");
+	search_box.addEventListener("keypress", 
+		function (e)
+		{
+			var key = e.keyCode ? e.keyCode : e.which;
+			
+			if (key == 13)
+				search();
+		}
+	, false);
+</pre>					
+				</p>
+				
 				<h4>Show/Hide More Options</h4>
 				<p>
 					We complete the user interface by implementing the toggle show/hide feature of the options overlay. We will need to add some JavaScript code for this. Go ahead and open up the <code>index.html</code> file in the root folder in your favorite text editor. Locate the <code>toggleOptions</code> function that exists as part of a script that is inserted once all DOM elements have been created and examine it. The <code>options</code> variable stores the <code>DIV</code> element tagged by the id <code>options_overlay</code>. This is our overlay element. The <code>visibility</code> variable stores the current value of the <code>display</code> attribute of the overlay element. This attribute determines whether the element is hidden or not. Its possible values are the strings <code>"none"</code> (hidden), <code>"inline"</code> (visible) or <code>"block"</code> (visible). The overlay is obviously a block element since it will not be rendered in line with text, so we implement a toggle mechanism that sets the <code>display</code> attribute of <code>options</code> to <code>"none"</code> when it is <code>"block"</code> and currently <code>"block"</code> when it is currently <code>"none"</code>. This can be accomplished using a simple if-else conditional structure. Look at the code in the script where we are binding a click listener to the <code>map_canvas</code> element. Whenever this element (and thus, the map) is clicked, all overlays disappear. Thus from now on, the options button acts as a toggle switch to show or hide the options overlay. Additionally, clicking anywhere else on the interface (not just the map) except for the toolbar will hide the overlay. This effectively emulates a toggle show/hide mechanism. The function should look something like this:
@@ -158,21 +184,123 @@
 			</div>
 			
 			<div id="backend">
-				<h3>Backend Functionality</h3>
+				<h2>Backend Functionality</h2>
 				<p>
-					Now let us work on the meat of the application. For the rest of this section, you will be working on <code>main.js</code> in the <code>js</code> folder unless specified otherwise.
+					Now let us work on the meat of the application. For the rest of this section, you will be working on <code>main.js</code> in the <code>js</code> folder unless specified otherwise. You will come across a lot of helper functions and five main points of execution (representing the main features of the application) that use the helper functions. The tutorial follows a modular approach in order to encourage this style of coding. Thus, it is not necessary to start working from the beginning. You can feel free to start from anywhere. For your convenience, the functions are separated into sections as some functions are more related to each other than others. But it is extremely important to complete one function before proceeding to the next one, even if you come across helper functions that you have not completed yet.
 				</p>
+								
+				
 				<!-- Introduction to the Application -->
+				<h3>Introduction To The Application</h3>
+				
 				<h4>Initialize The Application</h4>	
 				<p>
-					We first need to deal with some start-up initializations. Take a look at the global variables right now. When the application loads, it first renders the marked up interface followed by the Google Maps object. asd
+					We first need to deal with some start-up initializations. Take a quick look at the global variables right now. Some of them are self-explanatory while others are not, but do not worry about understanding them right now. We will discuss them as they come up during the tutorial. When the application loads, it first renders the marked up interface followed by the Google Maps object. The function <code>initializeMap()</code> contains various parameters and declarations for rendering and initializing the map and its various objects.
+					<br></br>
+					We start by initializing the Google Directions API services. Consider the two JavaScript objects <code>polyline_options</code> and <code>renderer_options</code>. These parameters modify the look and feel of any rendered path on the map. Create three properties for <code>polyline_options</code>: <code>strokeColor</code>, which is assigned as <code>"#0000CD"</code>; <code>strokeOpacity</code>, which is assigned as <code>0.6</code>; and <code>strokeWeight</code>, which is assigned as <code>7</code>. Create three more properties that are of type boolean for <code>renderer_options</code>: <code>draggable</code>, assigned as <code>false</code>; <code>preserveViewport</code>, assigned as <code>true</code>; and <code>supressMarkers</code>, assigned as <code>true</code>. Then instantiate the <code>directions_service</code> and <code>directions_display</code> objects. Your code should look like this so far:
+<pre>
+	// Parameters for directions rendering
+	var polyline_options  =
+		{
+			strokeColor: "#0000CD",
+			strokeOpacity: 0.6,
+			strokeWeight: 7
+		};
+	var renderer_options  = 
+		{
+			polylineOptions: polyline_options,
+			draggable: false,
+			preserveViewport: true,						
+			suppressMarkers: true
+		};	
+		
+	directions_service = new google.maps.DirectionsService();
+	directions_display = new google.maps.DirectionsRenderer(renderer_options);
+</pre>
+					We will now create the actual <code>Map</code> object. You should be familiar with this part from Lab 1, so the code for this has already been provided. Note the extra parameters for the various map controls. The goal is to preserve the maximum screen estate on the user's device, therefore the street view and map type controls are hidden and the zoom control is shrunk and placed on the top left side of the screen. This screenshot will demonstrate it:
+					<br/><br/>
+					Note that we did not set the center of the map in <code>mapOptions</code>. This is because we wish the map to be centered on the user's current location right from the beginning. We can attempt to do this using the following code:
+<pre>
+	// Attempt to center the map upon loading on the user's current position	
+	getUserLocation(
+		function (position)
+		{
+			var location = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+			updateMarkers([markers.user], [location], location);			
+		},
+		function ()
+		{
+			map.setCenter(stone_gordon);
+		}
+	);
+</pre>					
+					Do not worry about understanding the helper function <code>getUserLocation(callback, errorCallback)</code> above as we will walk through it later. In fact, do not worry yet about understanding any other helper functions that we use in this function. For now, the names of the helper functions should be sufficient to understand their use within this function.
+					<br/><br/>
+					Next, we initialize the marker overlay objects representing the user's location and the destination location. Note the global variable <code>markers</code> in the top of this file. It is a JavaScript object that represents all the markers that will be created in this application. Each marker is stored as a property of <code>markers</code> thereby allowing various convenient operations including linear iteration as well as associative access (key-value pairs à la hashing). More on this is briefly covered in the beginning of the Create Marker section below. You must once again be familiar with the process of creating markers from Lab 1 so the code is once again provided for you. We initialize the user and destination markers in advance so that they can be worked with right off the bat by other functions. Also, note the special code for the icon image of the user and destination markers. We provide our own image files (located in the <code>img</code> folder) as opposed to the default google maps marker image.
+					<br/><br/>
+					One of the neat usability features of the app is the ability to click on (press on) a marker to snap the view to it, also known as centering the map on it. We already handle this in the helper function <code>createMarker()</code> but we will need to handle the special case of the user and destination markers. To do this, iterate through the <code>markers</code> and bind a click listener for each marker that zooms in if required and centers the map on the marker. The following code demonstrates this:
+<pre>
+	// Clicking on a marker generally centers the map on it
+	for (marker in markers)
+	{
+		// IIFE (Immediately Invoked Function Expression) for dealing with the asynchronous nature of callback functions
+		!function (marker_local) // outer
+		{
+			google.maps.event.addListener(markers[marker], 'click',			
+				function () // inner (local)
+				{				
+					checkMapZoom(map.getZoom());
+					map.setCenter(markers[marker_local].position);					
+				}			
+			);			
+		}(marker)
+	}	
+</pre>					
+					The above code might not make sense to you if you are relatively new to asynchronous programming with JavaScript. First review asynchronous programming as mentioned in the <a href="#tools">Required Tools and Configurations</a> section of this tutorial and then read the following <a href="http://tobyho.com/2011/11/02/callbacks-in-loops/">article</a> that explains IIFEs (Immediately Invoked Function Expression) very well.
+					<br/><br/>
+					Moving forward, you will see a comment for some code for creating a circle that encloses an estimation of the campus area. This is very similar to creating a marker or a polyline so try doing this yourself. You will need to create an object for storing the options for the circle. Set its stroke color to <code>#FF0000</code>, stroke opacity to <code>0.6</code>, stroke weight to <code>2</code> and fill opacit to <code>0.0</code>. Then assign to it the global <code>map</code> object, center it on the global variable <code>campus_center</code>, set its radius to the global variable <code>search_radius</code> and lastly, disable its ability to be clickable (this is necessary so that the map enclosed within the circle can be interacted with). Then instantiate the <code>campus_area</code> global variable object using the options you just created. Your code for this should be something like this:
+<pre>
+	// Circle enclosing the known campus area
+	var circle_options = 
+		{
+			clickable: false,
+			strokeColor: "#FF0000",
+			strokeOpacity: 0.6,
+			strokeWeight: 2,
+			fillOpacity: 0.0,
+			map: map,
+			center: campus_center,
+			radius: search_radius
+		};
+	campus_area = new google.maps.Circle(circle_options);
+</pre>					
+					 Next, we subscribe the <code>map</code> object to the Google Places service as shown in the code by instantiating the <code>places_service</code> object and passing <code>map</code> as an argument. The last thing that we need to do in this function is integrate the Google Places Autocomplete object with the search text entry field from the user interface. This enhances the text field to drop down a list of place suggestions based on what the user types in real-time. While this feature sounds too complicated, all it really takes is the following piece of code:
+<pre>
+	// Create the autocomplete object and attach it to the search box	
+	var search_bounds = new google.maps.LatLngBounds( // Limits the suggestions to places within this bounding rectangle
+			new google.maps.LatLng(43.518774,-80.24148),
+			new google.maps.LatLng(43.547739,-80.203886)
+		);
+	var search_box = document.getElementById("search");		
+	var auto_options = 
+		{
+			bounds: search_bounds,
+			componentRestrictions: {country: "ca"}
+		}
+	// Attaching to the search box
+	var autocomplete = new google.maps.places.Autocomplete(search_box, auto_options);	
+</pre>					 
+					The code for actually attaching the autocomplete feature to the search box is in fact just the last line. What we really need to pay attenton to is the code prior to that. When typing a location in the search text entry field, he/she obviously expects suggestions to be in context with his/her location. For example, it would be a nuisance to see suggestions from other countries, and this is especially true on a mobile device. To address this issue, we limit the suggestions to a specified bounding rectangle. This rectangle was chosen manually with the help of the actual Google Maps web application. Additionally, the search is restricted to Canada to take care of any anomalies that might bypass the bounding rectangle.
+					<br/><br/>
+					We have now at last completed the function for initializing our application. Finally, go to the very top of the file and locate the <code>api_key</code> global variable. Assign to it your own Maps API key. If you do not have one, check with your instructor or get one yourself by following the link mentioned in the <a href="#tools">Required Tools and Configurations</a> section of this tutorial.
 				</p>												
 				
 				<!-- Creation and Mutation -->
+				<h3> Creation and Mutation</h3>
 				
 				<h4>Create Marker</h4>
 				<p>
-					Due to the nature of the application, we will have an indefinite and sometimes large number of markers on the map. In order to efficiently work with them, we store all markers in a global JavaScript object <code>markers</code>. Thus, we abstract the marker creation process into a separate function that appends newly created markers to this object. We will take advantage of the fact that JavaScript objects can function like associative arrays, so each marker is added as a property of the <code>markers</code> object<sup>1</sup>.
+					Due to the nature of the application, we will have an indefinite and sometimes large number of markers on the map. In order to efficiently work with them, we store all markers in a global JavaScript object <code>markers</code>, as mentioned earlier. Thus, we abstract the marker creation process into a separate function that appends newly created markers to this object. We will take advantage of the fact that JavaScript objects can function like associative arrays, so each marker is added as a property of the <code>markers</code> object<sup>1</sup>.
 					<br/><br/>
 					Go to the <code>createMarker(id, position, title, icon?)</code> function. The first and most important step is to create the marker object. Assign to <code>marker_options</code> the following properties: the <code>map</code> it belongs to; its <code>position</code> (a <code>google.maps.LatLng</code> object); and a <code>title</code> that briefly describes the marker. The <code>map</code> global variable is obviously the map; the <code>position</code> and <code>title</code> arguments of the function satisfy the next two properties. Now the icon uri that contains the image of the marker is an optional argument to the function, so we need to handle this. This can be done as follows:
 <pre>
@@ -276,6 +404,7 @@
 					
 				
 				<!-- Some Helpful Housekeeping -->
+				<h3>Some Helpful Housekeeping</h3>
 
 				<h4>Restrict Map Zoom Level</h4>
 				<p>
@@ -333,6 +462,7 @@
 				</p>				
 				
 				<!-- Geolocation and Storage -->
+				<h3>Geolocation and Storage</h3>
 				
 				<h4>Request User's Current Location</h4>
 				<p>
@@ -446,6 +576,7 @@
 				</p>				
 				
 				<!-- Main Feature Execution Points -->
+				<h3>Main Feature Execution Points</h3>
 				
 				<h4>Snap To User</h4>
 				<p>
@@ -503,7 +634,7 @@
 				<p>
 					Another main feature of the application is the ability to choose a building from a provided list and draw it on the map while also snapping to it. Centering/Snapping the map on/to the building helps the user know where the building is without having to look around on the map for the marker. Go to the <code>mark()</code> function and examine the code that is already present there. We obtain a reference to the <code>select</code> drop-down element from the user interface and store it in <code>select</code>. The value of the actual selection, which is a string that contains the abbreviation of the selected building, is stored in <code>value</code>. This string could also be <code>"null"</code>, which implies that the placeholder option was selected. The conditional structure that follows ensures that no processing is performed if <code>value</code> evaluates to <code>"null"</code>.
 					<br/><br/>
-					Go to the top of the file and look for the global variable <code>buildings</code>. It represents an object with a number of properties that represent the different buildings in the campus. Each property is an object that in turn has two properties, <code>name</code> and <code>LatLng</code>. These respectively represent the full name of the building and its location in latitude and longitude. Note that the abbreviation of the building serves as the property name (or id/key) for each property (building) of <code>buildings</code>. Now go to the function <code>mark()</code> and create a variable <code>selected_building</code> and store in it the object representing the selected building. You can access this from the <code>buildings</code> object associatively using the abbreviation stored in <code>value</code>.
+					Go to the top of the file and look for the global variable <code>buildings</code>. It represents an object with a (large) number of properties that represent the different buildings in the campus. Each property is an object that in turn has two properties, <code>name</code> and <code>LatLng</code>. These respectively represent the full name of the building and its location in latitude and longitude. This "list" of buildings was meticulously created by manually computing the latitude/longitude coordinates for each building using the actual Google Maps web service. Note that the abbreviation of the building serves as the property name (or id/key) for each property (building) of <code>buildings</code>. Now go to the function <code>mark()</code> and create a variable <code>selected_building</code> and store in it the object representing the selected building. You can access this from the <code>buildings</code> object associatively using the abbreviation stored in <code>value</code>.
 <pre>
 	var selected_building = buildings[value];
 </pre>		
@@ -599,7 +730,7 @@
 		new google.maps.Size(34, 34)  // final dimensions of scaled image
 	);
 </pre>
-					This fix addresses a problem with the huge icons provided by Google in the <code>results</code> object by shrinking them to half the size. It is an optional snippet of code so feel free to discard it if you wish. 
+					This fix addresses a problem with the huge icons provided by Google in the <code>results</code> object by shrinking them to half the size. It is an optional snippet of code so feel free to discard it if you wish. Recall that this is very similar to the calibration done on the custom marker image for the user's marker in <code>initializeMap()</code>. 
 					<br/><br/>
 					Moving forward, we need to create a marker for each place so that each point of interest can be displayed on the map. Go ahead and call <code>createMarker(id, position, title, icon)</code> and pass to it <code>place.id</code>, <code>place.geometry.location</code>, <code>place.name</code> and <code>shrink_icon</code> respectively. The meaning and context of each of these variables is straightforward. One particular note is that the identifier string in <code>place.id</code> is guaranteed to be unique for every point of interest that exists and also the same for each point of interest forever. This is what makes it extremely useful for use as the unique identifier representing its marker in the <code>markers</code> object. As a usability boon, we want to snap the map to the last result of the search so that the user does not have to move around the map to locate the markers representing the points of interest. This also works very well for searches that produce only 2 or 3 results as they are more likely to be located close to each other thereby providing the user with a good view of most (if not all) points of interest in one glance. So check if the counter has reached the last index and then call <code>saveToLocalStorage(location)</code> while passing to it <code>place.geometry.location</code>. The anonymous callback function should look something like this so far:
 <pre>
@@ -607,7 +738,7 @@
 		{
 			if (status == google.maps.places.PlacesServiceStatus.OK)
 			{				
-				for (var i = 0; i < results.length; i++)
+				for (var i = 0; i &#60; results.length; i++)
 				{					
 					var place = results[i];													
 					
@@ -646,14 +777,14 @@
 			</div>			
 			
 			<div id="conclusion">	
-				<h3>Conclusion</h3>
+				<h2>Conclusion</h2>
 				<p>
 					And there you have it: a feature-rich location-aware application all in a day's work (your mileage may vary depending on how much time and energy you devoted to this project). Your final steps would be to package and sign your application and then publish it to the app-store but before that, spend some time thinking about ways you can improve the application. Are there any features that came to your mind as you were working? Are there any obvious instances of inefficient coding that can be rectified? Can you think of more efficient ways to approach the problem? Take the time to implement them as well. Once you are done, follow the instructions in the section "Finalizing your application" of <a href="http://cmer.uoguelph.ca/labs/Lab1-BB10-WebWorks.pdf">Lab 1</a>.
 				</p>
 			</div>
 			
 			<div id="appendix_a">
-				<h3>Appendix A: Further Learning</h3>
+				<h2>Appendix A: Further Learning</h2>
 				<ol>
 					<li>
 						<h4>Associative Arrays in JavaScript</h4>
@@ -666,40 +797,40 @@
 						<p>
 							Instead of having the <code>markers</code> and <code>positions</code> arrays as two separate objects, create one JavaScript array object to pass as a single argument that encompasses both the markers and their positions.
 <pre>
-		// Here is the modified function
-		function updateMarkers (points_of_interest, center)
+	// Here is the modified function
+	function updateMarkers (points_of_interest, center)
+	{
+		for (var poi in points_of_interest)
 		{
-			for (var poi in points_of_interest)
-			{
-				if (poi.position !== undefined)
-					poi.marker.setPosition(poi.position);
-					
-				poi.marker.setMap(map);
+			if (poi.position !== undefined)
+				poi.marker.setPosition(poi.position);
 				
-				// Continue the rest of the function accordingly...
-			}
+			poi.marker.setMap(map);
 			
-		}		
-		// Assume we are plotting a path between the user's current location and a destination point
-		// We are in the plot() function and are calling the updateMarkers() function						
-		// We would thus create the following array of objects...
-		var points_of_interest = 
-		[
-			{
-				marker: markers.user,
-				position: new_user_location
-			}, 
-			{
-				marker: markers.destination,
-				position: new_destination_location
-			}, 
-			{
-				// etc. etc. for as many markers as needed
-			}
-		];
+			// Continue the rest of the function accordingly...
+		}
 		
-		// ...and then pass it into updateMarkers as follows
-		updateMarkers(points_of_interest, position);
+	}		
+	// Assume we are plotting a path between the user's current location and a destination point
+	// We are in the plot() function and are calling the updateMarkers() function						
+	// We would thus create the following array of objects...
+	var points_of_interest = 
+	[
+		{
+			marker: markers.user,
+			position: new_user_location
+		}, 
+		{
+			marker: markers.destination,
+			position: new_destination_location
+		}, 
+		{
+			// etc. etc. for as many markers as needed
+		}
+	];
+	
+	// ...and then pass it into updateMarkers as follows
+	updateMarkers(points_of_interest, position);
 </pre>							
 						</p>
 					</li>

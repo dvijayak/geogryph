@@ -233,7 +233,7 @@ var red_university = path_images + "university.png";
 // External resources (if any)
 
 
-// Create and initialize the main Google Maps object
+// Create and initialize the key Google Maps objects
 function initializeMap ()
 {	
 	// Parameters for directions rendering
@@ -291,7 +291,8 @@ function initializeMap ()
 			title: "You are HERE",				
 			// icon: path_icon_me
 			icon: new google.maps.MarkerImage(
-				path_icon_me, new google.maps.Size(64, 64), // Assumes that the original image is 64 x 64
+				path_icon_me, 
+				new google.maps.Size(64, 64), // Assumes that the original image is 64 x 64
 				new google.maps.Point(0, 0), // origin point of the image (usually 0,0)
 				new google.maps.Point(32, 64), // anchor point, i.e. where it points to the location (usually in the bottom middle, so at (floor(max_x/2),max_y))
 				new google.maps.Size(64, 64) // final dimensions of scaled image

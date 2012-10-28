@@ -103,9 +103,13 @@
 			<input class="geo_options" id="search" type="text" name="search"></input>
 			<a class="left" id="go" href="javascript:search();"></a>							
 			<a class="left" id="about" href="javascript:aboutApp();"></a>
-			<a class="left" id="empty" href="javascript:clearStorage();">Empty<br>Storage</a>
-			
+			<a class="left" id="empty" href="javascript:clearStorage();">Empty<br>Storage</a>			
 		</div>
+		
+		<!-- Invoke the search function directly when the user presses Enter after typing the query in the input box -->
+		<script type="text/javascript">			
+			var search_box;
+		</script>		
 		
 		<div id="about_overlay" class="geo_about">
 			<p>
