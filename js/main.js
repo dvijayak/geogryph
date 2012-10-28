@@ -786,12 +786,3 @@ function clearStorage ()
 	else
 		alert("Error: localStorage is not supported in your device!");
 }
-
-// JUST A TESTING FUNCTION
-function checkLocalStorage ()
-{
-	console.log(localStorage.savedLocation);
-	alert(localStorage.savedLocation);	
-	for (marker in markers)	
-		console.log(marker.toString());
-}
