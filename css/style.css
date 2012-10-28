@@ -9,7 +9,7 @@ body { height: 100%; margin: 0; padding: 0; }
 
 #toolbar
 {				
-	position: fixed;
+	position: absolute;
 	z-index: 1;
 	width: 100%;	
 	bottom: 0;			
@@ -138,7 +138,7 @@ a:hover, a:active, select:active
 
 #options_overlay
 {	
-	position: fixed;
+	position: absolute;
 	/* width: 250px; */
 	/* height: 250px;	 */
 	bottom: 64px;

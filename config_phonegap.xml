@@ -30,13 +30,7 @@
 	<!-- Preferences: Blackberry -->
 	<preference name="disable-cursor" value="true"/>
 	
-	<!-- Icons and Splash Screens -->
-	<gap:splash src="img/cmer.png" gap:platform="android" gap:density="ldpi"/>
-	<gap:splash src="img/cmer.png" gap:platform="android" gap:density="mdpi"/>
-	<gap:splash src="img/cmer.png" gap:platform="android" gap:density="hdpi"/>
-	<gap:splash src="img/cmer.png" gap:platform="android" gap:density="xhdpi"/>
-	<gap:splash src="img/cmer.png" gap:platform="blackberry"/>
-	<!-- Complete sections for iOS and winphone -->
+
 	
 	<!-- Features (Android & Windows Phone permissions) -->
 	<feature name="http://api.phonegap.com/1.0/network"/>
@@ -44,5 +38,18 @@
 
 	<!-- External resources -->
 	<access origin="*"/>
+	
+	<!-- Splash Screens and Icons -->
+	<gap:splash src="img/cmer_768x1280.png" gap:platform="android" gap:density="ldpi" />
+	<gap:splash src="img/cmer_768x1280.png" gap:platform="android" gap:density="mdpi" />
+	<gap:splash src="img/cmer_768x1280.png" gap:platform="android" gap:density="hdpi" />
+	<gap:splash src="img/cmer_768x1280.png" gap:platform="android" gap:density="xhdpi" />	
+	<!-- Complete sections for iOS and winphone -->	
+	
+	<icon src="img/icon.png" gap:platform="android" gap:density="ldpi" />
+	<icon src="img/icon.png" gap:platform="android" gap:density="mdpi" />
+	<icon src="img/icon.png" gap:platform="android" gap:density="hdpi" />
+	<icon src="img/icon.png" gap:platform="android" gap:density="xhdpi" />	
+	<!-- Complete sections for iOS and winphone -->
 	
 </widget>

@@ -449,40 +449,31 @@ function plot (destination)
 	}	
 }
 
-// Search for points of interest and display them on the map
+// [DONE[ Search for points of interest and display them on the map
 function search ()
 {
 	var input = document.getElementById("search").value;
 		
-	var request = 
-	{
-		keyword: input,		
-		location: campus_center,
-		radius: search_radius.toString()		
-	}
+	/* var request = 
+		{
+			keyword: input,		
+			location: campus_center,
+			radius: search_radius.toString()		
+		};
 		
 	places_service.search(request, 
 		function (results, status, pagination)
 		{
 			if (status == google.maps.places.PlacesServiceStatus.OK)
-			{
-				var i; // Declared outside in order to keep track of the last search result
-				for (i = 0; i < results.length; i++)
+			{				
+				for (var i = 0; i < results.length; i++)
 				{					
-					var place = results[i];		
-					
-					if (place.hasOwnProperty("opening_hours"))
-					{
-						if (place.opening_hours.open_now)
-							place.name += " (OPEN)";
-						else
-							place.name += " (CLOSED)";
-					}
-						
+					var place = results[i];													
 					
 					// Temporary fix: The icons are scaled down to half since the icons provided from the API results are too big				
 					var shrink_icon = new google.maps.MarkerImage(
-						place.icon, new google.maps.Size(71, 71), // Assumes that the original image is 71x71
+						place.icon, 
+						new google.maps.Size(71, 71), // Assumes that the original image is 71x71
 						new google.maps.Point(0, 0),  // origin point of the image (usually 0,0)
 						new google.maps.Point(17, 34),  // anchor point, i.e. where it points to the location (usually in the bottom middle, so at (floor(max_x/2),max_y))
 						new google.maps.Size(34, 34)  // final dimensions of scaled image
@@ -515,7 +506,7 @@ function search ()
 				pagination.nextPage(); // nextPage() calls this callback function once again
 			}
 		}
-	);
+	); */
 }
 
 
@@ -534,11 +525,11 @@ function render (origin, destination)
 {
 	// Calculate the route using the directions API
 	var request = 
-	{
-		origin: origin,
-		destination: destination,
-		travelMode: google.maps.TravelMode.WALKING // This is the most appropriate mode for the use of this application
-	};
+		{
+			origin: origin,
+			destination: destination,
+			travelMode: google.maps.TravelMode.WALKING // This is the most appropriate mode for the use of this application
+		};
 	
 	directions_service.route(request, 
 		function (result, status)
