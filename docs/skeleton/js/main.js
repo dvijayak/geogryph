@@ -234,40 +234,11 @@ var red_university = path_images + "university.png";
 
 // External resources (if any)
 
-// [DONE] Show/hide the overlay containing extra options
-function toggleOptions ()
-{
-	var options = document.getElementById("options_overlay");
-	var visibility = options.style.display;	
-	
-	if (visibility == "none")
-		options.style.display = "block";
-	else
-		options.style.display = "none";
-	
-}
-
-// [DONE] Toggles the about overlay on/off
-function aboutApp ()
-{
-	var about = document.getElementById("about_overlay");
-	var visibility = about.style.display;	
-	
-	if (visibility == "none")
-		about.style.display = "block";
-	else
-		about.style.display = "none";	
-}
-
 // Create and initialize the main Google Maps object
 function initializeMap ()
 {	
 
 	// Parameters for directions rendering
-		var marker_options =
-		{
-			// animation: google.maps.Animation.DROP
-		};
 	var polyline_options =
 		{
 			strokeColor: "#0000CD",
@@ -277,13 +248,12 @@ function initializeMap ()
 	var renderer_options = 
 		{
 			draggable: false,
-			preserveViewport: true,
-			markerOptions: marker_options,
+			preserveViewport: true,			
 			polylineOptions: polyline_options,
 			suppressMarkers: true
 		};	
 	
-	directions_service = new google.maps.DirectionsService();
+	directions_service/* = new google.maps.DirectionsService()*/;
 	directions_display = new google.maps.DirectionsRenderer(renderer_options);
 			
 	// Parameters for the initialization of the map
@@ -393,8 +363,7 @@ function initializeMap ()
 			bounds: search_bounds,
 			componentRestrictions: {country: "ca"}
 		}
-	var autocomplete = new google.maps.places.Autocomplete(search_box, auto_options);		
-			
+	var autocomplete = new google.maps.places.Autocomplete(search_box, auto_options);					
 }
 
 

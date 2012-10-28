@@ -131,6 +131,7 @@
 			</p>	
 		</div>
 		
+		<!-- Implement toggle functionality for overlays -->
 		<script type="text/javascript">
 			// All overlays are hidden initially
 			var options = document.getElementById("options_overlay");
@@ -146,6 +147,30 @@
 					about.style.display = "none";
 				}
 			);
+			
+			// [DONE] Show/hide the overlay containing extra options
+			function toggleOptions ()
+			{
+				var options = document.getElementById("options_overlay");
+				var visibility = options.style.display;	
+				
+				/*if (visibility == "none")
+					options.style.display = "block";
+				else
+					options.style.display = "none";*/				
+			}
+
+			// [DONE] Toggles the about overlay on/off
+			function aboutApp ()
+			{
+				/*var about = document.getElementById("about_overlay");
+				var visibility = about.style.display;	
+				
+				if (visibility == "none")
+					about.style.display = "block";
+				else
+					about.style.display = "none";*/	
+			}			
 		</script>
 			
 	</body>
