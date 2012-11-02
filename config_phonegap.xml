@@ -44,6 +44,10 @@
 	<gap:splash src="img/cmer_768x1280.png" gap:platform="android" gap:density="mdpi" />
 	<gap:splash src="img/cmer_768x1280.png" gap:platform="android" gap:density="hdpi" />
 	<gap:splash src="img/cmer_768x1280.png" gap:platform="android" gap:density="xhdpi" />	
+	<gap:splash src="img/cmer_1280x768.png" gap:platform="android" gap:density="ldpi" />
+	<gap:splash src="img/cmer_1280x768.png" gap:platform="android" gap:density="mdpi" />
+	<gap:splash src="img/cmer_1280x768.png" gap:platform="android" gap:density="hdpi" />
+	<gap:splash src="img/cmer_1280x768.png" gap:platform="android" gap:density="xhdpi" />
 	<!-- Complete sections for iOS and winphone -->	
 	
 	<icon src="img/icon.png" gap:platform="android" gap:density="ldpi" />

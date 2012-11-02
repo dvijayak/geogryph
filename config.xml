@@ -27,7 +27,8 @@
 	<access uri="*" subdomains="true"></access>
 	
 	<!-- Splash Screens and Icons -->
-	<rim:splash src="img/cmer_768x1280.png"/>
+	<rim:splash src="img/cmer_768x1280.png"/> <!--  Portrait -->
+	<rim:splash src="img/cmer_1280x768.png"/> <!-- Landscape -->
 	<icon src="img/icon.png"/>
 	
 </widget>
